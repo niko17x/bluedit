@@ -1,3 +1,5 @@
+// ! This component is no longer being rendered - LogInModal.jsx has taken over for this component. Only keep for reference.
+
 import React, { useContext } from "react";
 import { DataContext } from "../App";
 

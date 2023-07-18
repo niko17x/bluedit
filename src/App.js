@@ -23,7 +23,9 @@ import {
   orderBy,
   serverTimestamp,
   addDoc,
+  and,
 } from "firebase/firestore";
+import SignUpModal from "./components/SignUpModal";
 
 export const DataContext = createContext(); // Out of component to prevent re-renders.
 
@@ -35,6 +37,26 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [logInModal, setLogInModal] = useState(false);
   const [user, setUser] = useState({}); // Firebase store user object.
+  const [logInMod, setLogInMod] = useState(false);
+  const [signUpMod, setSignUpMod] = useState(false);
+  const [userCredMod, setUserCredMod] = useState(false);
+
+  console.log("Rendering App Component.");
+
+  const showLogInMod = () => {
+    setLogInMod(true);
+  };
+
+  const showSignUpMod = () => {
+    setSignUpMod(true);
+    setLogInMod(false);
+  };
+
+  const showUserCredMod = () => {
+    setSignUpMod(false);
+    setLogInMod(false);
+    setUserCredMod(true);
+  };
 
   // Firebase references:
   const addPostRef = collection(db, "posts");
@@ -100,13 +122,16 @@ function App() {
   };
 
   const closeModal = () => {
-    setLogInModal(false);
+    // setLogInModal(false);
+    setLogInMod(false);
+    setSignUpMod(false);
+    setUserCredMod(false);
   };
 
-  const openModal = () => {
-    console.log("openModal log");
-    setLogInModal(true);
-  };
+  // const openModal = () => {
+  //   console.log("openModal log");
+  //   setLogInModal(true);
+  // };
 
   const handlePostCreation = (postTitle, postContent, form) => {
     addDoc(addPostRef, {
@@ -130,11 +155,18 @@ function App() {
         logInModal,
         setLogInModal,
         closeModal,
-        openModal,
+        // openModal,
         user,
         signOutUser,
         signInUser,
         handlePostCreation,
+        registerUser,
+        signUpMod,
+        logInMod,
+        userCredMod,
+        showLogInMod,
+        showSignUpMod,
+        showUserCredMod,
       }}
     >
       <BrowserRouter>
@@ -142,7 +174,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/posts-page" element={<PostsPage />} />
           <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/sign-in" element={<UserSignIn />} />
+          {/* <Route path="/sign-in" element={<UserSignIn />} /> */}
         </Routes>
       </BrowserRouter>
     </DataContext.Provider>

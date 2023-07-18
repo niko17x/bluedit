@@ -15,7 +15,6 @@ const HomePage = () => {
     <>
       <Navbar />
       <div className="main_content">
-        {logInModal ? <LogInModal /> : ""}
         <div className="main_posts">
           <CreatePostInput />
           <FilterPosts />
