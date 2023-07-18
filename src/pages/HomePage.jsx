@@ -7,26 +7,19 @@ import FilterPosts from "../components/FilterPosts";
 import SidebarActions from "../components/SidebarActions";
 import SidebarTC from "../components/SidebarTC";
 import { DataContext } from "../App";
-import UserSignIn from "../components/UserSignIn";
+import LogInModal from "../components/LogInModal";
 
 const HomePage = () => {
-  const { loggedIn, setLogInModal, posts, signOutUser } =
-    useContext(DataContext);
+  const { logInModal, openModal } = useContext(DataContext);
   return (
     <>
-      <Navbar
-        isLoggedIn={loggedIn}
-        // closeModal={}
-        // openModal={}
-        logInModal={loggedIn}
-        setLogInModal
-        signOutUser={signOutUser}
-      />
+      <Navbar />
       <div className="main_content">
+        {logInModal ? <LogInModal /> : ""}
         <div className="main_posts">
           <CreatePostInput />
           <FilterPosts />
-          <Post getPosts={posts} />
+          <Post />
         </div>
         <div className="main_sidebar">
           <SidebarTryPremium />

@@ -1,14 +1,14 @@
-import React, { createContext } from "react";
+import React, { useContext } from "react";
 import { DataContext } from "../App";
 
-const CreatePost = ({ submitPost }) => {
-  // const { submitPost } = createContext(DataContext);
+const CreatePost = () => {
+  const { handlePostCreation } = useContext(DataContext);
   const handleSubmit = (e) => {
     e.preventDefault();
-    const postTitle = e.target.elements.title.value;
-    const postContent = e.target.elements.content.value;
-    const form = document.querySelector("form");
-    submitPost(postTitle, postContent, form);
+    const form = e.target;
+    const postTitle = form.elements.title.value;
+    const postContent = form.elements.content.value;
+    handlePostCreation(postTitle, postContent, form);
   };
 
   return (

@@ -8,7 +8,6 @@ import { DataContext } from "../App";
 // contains: bluedit icon, homepage, search feature, sign-in feature.
 
 const Navbar = () => {
-  const { loggedIn, logInModal, user, signOutUser } = useContext(DataContext);
   return (
     <div className="navbar--container">
       <div className="navbar--logo">
@@ -18,9 +17,8 @@ const Navbar = () => {
       <div className="navbar--responsive">
         <CategoryDropdown />
         <SearchBar />
-        <LogInButton loggedIn={loggedIn} signOutUser={signOutUser} />
+        <LogInButton />
       </div>
-      {logInModal ? <LogInModal /> : ""}
     </div>
   );
 };

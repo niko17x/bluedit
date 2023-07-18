@@ -25,7 +25,10 @@ import {
   addDoc,
 } from "firebase/firestore";
 
-export const DataContext = createContext();
+export const DataContext = createContext(); // Out of component to prevent re-renders.
+
+// Firebase authentication:
+const authenticate = getAuth();
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -35,12 +38,29 @@ function App() {
 
   // Firebase references:
   const addPostRef = collection(db, "posts");
-  // Firebase authentication:
-  const auth = getAuth();
 
-  const authChange = onAuthStateChanged(auth, (currentUser) => {
-    setUser(currentUser);
-  });
+  useEffect(() => {
+    const fetchData = async () => {
+      const que = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(que);
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPosts(data);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(authenticate, (currentUser) => {
+      setUser(currentUser);
+    });
+    // Cleanup on unmount:
+    return () => {
+      unsubscribe();
+    };
+  }, [authenticate]);
 
   const registerUser = async (email, password) => {
     try {
@@ -79,26 +99,12 @@ function App() {
     await signOut(auth);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const que = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(que);
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPosts(data);
-    };
-    fetchData();
-  }, []);
-
-  const closeModal = (e) => {
-    e.preventDefault();
+  const closeModal = () => {
     setLogInModal(false);
   };
 
-  const openModal = (e) => {
-    e.preventDefault();
+  const openModal = () => {
+    console.log("openModal log");
     setLogInModal(true);
   };
 
@@ -128,21 +134,14 @@ function App() {
         user,
         signOutUser,
         signInUser,
+        handlePostCreation,
       }}
     >
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <HomePage isLoggedIn={loggedIn} signOutUser={signOutUser} />
-            }
-          />
-          <Route path="/posts-page" element={<PostsPage getPost={posts} />} />
-          <Route
-            path="/create-post"
-            element={<CreatePost submitPost={handlePostCreation} />}
-          />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/posts-page" element={<PostsPage />} />
+          <Route path="/create-post" element={<CreatePost />} />
           <Route path="/sign-in" element={<UserSignIn />} />
         </Routes>
       </BrowserRouter>

@@ -6,7 +6,7 @@ const LogInButton = () => {
   const { user, signOutUser, openModal } = useContext(DataContext);
   return (
     <div className="log_in_button">
-      {user ? (
+      {/* {user ? (
         <>
           <div>{user.email}</div>
           <button className="log_out" type="button" onClick={signOutUser}>
@@ -19,11 +19,12 @@ const LogInButton = () => {
             Log In
           </button>
         </div>
-      )}
+      )} */}
+      <button type="button" onClick={openModal}>
+        Click me
+      </button>
     </div>
   );
 };
 
 export default LogInButton;
-
-// Todo: Instead of using <select>, opt for a dropdown menu b/c select tags prevent the button element from working the way it should.
