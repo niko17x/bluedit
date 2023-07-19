@@ -2,7 +2,8 @@ import React, { useContext } from "react";
 import { DataContext } from "../App";
 
 const SignUpModal = () => {
-  const { closeModal, handleAuth, showUserCredMod } = useContext(DataContext);
+  const { closeModal, handleAuth, showUserCredMod, showLogInMod } =
+    useContext(DataContext);
 
   return (
     <div className="log_in_modal--container">
@@ -39,7 +40,7 @@ const SignUpModal = () => {
           </button>
           <div>
             Already a redditor?
-            <a> Log In</a>
+            <a onClick={showLogInMod}> Log In</a>
           </div>
         </form>
       </div>

@@ -3,12 +3,21 @@ import { Link } from "react-router-dom";
 import { DataContext } from "../App";
 
 const LogInModal = () => {
-  const { registerUser, signInUser, signOutUser, user, showSignUpMod } =
-    useContext(DataContext);
+  const {
+    registerUser,
+    signInUser,
+    signOutUser,
+    user,
+    showSignUpMod,
+    showLogInMod,
+  } = useContext(DataContext);
 
   const handleAuth = (e, isSignIn = false) => {
     e.preventDefault();
     let email, password;
+
+    console.log(e.target.tagName);
+    console.log(isSignIn, email, password);
 
     if (e.target.tagName === "FORM") {
       // Check if it's a form submission event => 'e' is referring to the form itself so it there must be differentiation between the button for form submission and button for 'sign in / sign out'.
@@ -24,7 +33,6 @@ const LogInModal = () => {
       // if user is signed in and isSignIn is true
       signOutUser(); // sign out the user
     } else if (isSignIn && email) {
-      console.log("logged");
       signInUser(email, password);
     } else {
       registerUser(email, password);
@@ -88,38 +96,12 @@ const LogInModal = () => {
           <button type="submit">Log In</button>
           <div>
             New to Bluedit?
-            {/* <Link to="/sign-up-modal">Sign Up</Link> */}
             <span onClick={showSignUpMod}> Sign Up</span>
           </div>
         </form>
       </div>
     </div>
   );
-
-  //   <div>
-  //   <form
-  //     className="sign_in--form"
-  //     id="sign_in--form"
-  //     onSubmit={(e) => handleAuth(e, false)}
-  //   >
-  //     <label htmlFor="email" />
-  //     <input type="email" name="email" id="email" placeholder="email"></input>
-
-  //     <label htmlFor="password" />
-  //     <input
-  //       type="password"
-  //       placeholder="password"
-  //     ></input>
-
-  //     <button type="submit">Create Account</button>
-
-  //     <button type="button" onClick={(e) => handleAuth(e, true)}>
-  //       {user ? (user.email ? "Sign Out" : "Sign In") : "Sign In"}
-  //     </button>
-
-  //   </form>
-  //   <div>{user && user.email ? user.email : "No User Logged In"}</div>
-  // </div>
 };
 
 export default LogInModal;

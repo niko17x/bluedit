@@ -9,7 +9,7 @@ const LogInButton = () => {
     <div className="log_in_button">
       {user ? (
         <>
-          <div>{user.email}</div>
+          <div>{user.email} Hello</div>
           <button className="log_out" type="button" onClick={signOutUser}>
             ⎋ Log Out
           </button>

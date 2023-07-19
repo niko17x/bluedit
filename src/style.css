@@ -165,6 +165,7 @@ button:not(:disabled):active {
   display: grid;
   gap: 0.5rem;
   place-items: center;
+  color: white;
 }
 
 .log_in_button .log_in,
@@ -180,6 +181,7 @@ button:not(:disabled):active {
 .log_in_button .log_out {
   width: 70%;
   font-size: 50%;
+  border: 50px solid orange;
 }
 
 /* LOGINMODAL.JSX */
@@ -188,13 +190,13 @@ button:not(:disabled):active {
   padding: 3rem;
   border-radius: 10px;
   z-index: 9999;
-  height: 60vh;
 }
 
 .modal.show {
+  min-height: 40vh;
+  min-width: 35vw;
   top: 50%;
   left: 50%;
-  width: 35%;
   display: grid;
   position: fixed;
   align-items: center;

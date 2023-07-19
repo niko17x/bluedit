@@ -10,7 +10,7 @@ import UserCred from "./UserCred";
 // contains: bluedit icon, homepage, search feature, sign-in feature.
 
 const Navbar = () => {
-  const { logInMod, signUpMod, userCredMod } = useContext(DataContext);
+  const { logInMod, signUpMod, userCredMod, user } = useContext(DataContext);
   return (
     <div className="navbar--container">
       <div className="navbar--logo">
@@ -20,8 +20,8 @@ const Navbar = () => {
       <div className="navbar--responsive">
         <CategoryDropdown />
         <SearchBar />
-        <LogInButton />
-        {/* {logInMod ? <LogInModal /> : ""} */}
+        {/* {user ? user.email : <LogInButton />} */}
+        {!user ? <LogInButton /> : ""}
         {logInMod && <LogInModal />}
         {signUpMod && <SignUpModal />}
         {userCredMod && <UserCred />}

@@ -45,11 +45,14 @@ function App() {
 
   const showLogInMod = () => {
     setLogInMod(true);
+    setSignUpMod(false);
+    setUserCredMod(false);
   };
 
   const showSignUpMod = () => {
-    setSignUpMod(true);
     setLogInMod(false);
+    setSignUpMod(true);
+    setUserCredMod(false);
   };
 
   const showUserCredMod = () => {
