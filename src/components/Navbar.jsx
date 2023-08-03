@@ -20,8 +20,7 @@ const Navbar = () => {
       <div className="navbar--responsive">
         <CategoryDropdown />
         <SearchBar />
-        {/* {user ? user.email : <LogInButton />} */}
-        {!user ? <LogInButton /> : ""}
+        <LogInButton />
         {logInMod && <LogInModal />}
         {signUpMod && <SignUpModal />}
         {userCredMod && <UserCred />}

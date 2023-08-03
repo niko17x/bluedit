@@ -1,50 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { DataContext } from "../App";
+import useResetErrorTimeout from "./hooks/useResetErrorTimeout";
 
 const LogInModal = () => {
-  const {
-    registerUser,
-    signInUser,
-    signOutUser,
-    user,
-    showSignUpMod,
-    showLogInMod,
-  } = useContext(DataContext);
+  const { closeModal, showModal, setEmail, setPassword, signInUser, error } =
+    useContext(DataContext);
+  const resetErrorTimeout = useResetErrorTimeout();
 
-  const handleAuth = (e, isSignIn = false) => {
-    e.preventDefault();
-    let email, password;
-
-    console.log(e.target.tagName);
-    console.log(isSignIn, email, password);
-
-    if (e.target.tagName === "FORM") {
-      // Check if it's a form submission event => 'e' is referring to the form itself so it there must be differentiation between the button for form submission and button for 'sign in / sign out'.
-      email = e.target.elements.email.value;
-      password = e.target.elements.password.value;
-    } else {
-      // It's a button click event => select and store values for both email and password.
-      email = document.querySelector("#email").value;
-      password = document.querySelector("#password").value;
-    }
-
-    if (user && isSignIn) {
-      // if user is signed in and isSignIn is true
-      signOutUser(); // sign out the user
-    } else if (isSignIn && email) {
-      signInUser(email, password);
-    } else {
-      registerUser(email, password);
-    }
-
-    // Reset email and password values:
-    document.querySelector("#email").value = "";
-    document.querySelector("#password").value = "";
-    console.log("Logged In");
-  };
-
-  const { closeModal } = useContext(DataContext);
   return (
     <div className="log_in_modal--container">
       <div className="modal show">
@@ -54,7 +17,12 @@ const LogInModal = () => {
         <form
           className="log_in_form sign_in--form"
           id="sign_in--form"
-          onSubmit={(e) => handleAuth(e, false)}
+          onSubmit={(e) => {
+            e.preventDefault();
+            const email = e.target.elements.email.value;
+            const password = e.target.elements.password.value;
+            signInUser(email, password).catch(() => resetErrorTimeout());
+          }}
         >
           <div className="terms">
             <h2>Log in</h2>
@@ -77,6 +45,7 @@ const LogInModal = () => {
               name="email"
               id="email"
               placeholder="EMAIL"
+              onChange={(e) => setEmail(e.target.value)}
             ></input>
           </label>
           <label>
@@ -85,8 +54,10 @@ const LogInModal = () => {
               name="password"
               id="password"
               placeholder="PASSWORD"
+              onChange={(e) => setPassword(e.target.value)}
             ></input>
           </label>
+          {error && <div>{error}</div>}
           <div>
             Forgot your
             <a> username </a>
@@ -96,7 +67,7 @@ const LogInModal = () => {
           <button type="submit">Log In</button>
           <div>
             New to Bluedit?
-            <span onClick={showSignUpMod}> Sign Up</span>
+            <a onClick={() => showModal("signup")}> Sign Up</a>
           </div>
         </form>
       </div>

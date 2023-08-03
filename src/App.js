@@ -40,29 +40,38 @@ function App() {
   const [logInMod, setLogInMod] = useState(false);
   const [signUpMod, setSignUpMod] = useState(false);
   const [userCredMod, setUserCredMod] = useState(false);
-
-  console.log("Rendering App Component.");
-
-  const showLogInMod = () => {
-    setLogInMod(true);
-    setSignUpMod(false);
-    setUserCredMod(false);
-  };
-
-  const showSignUpMod = () => {
-    setLogInMod(false);
-    setSignUpMod(true);
-    setUserCredMod(false);
-  };
-
-  const showUserCredMod = () => {
-    setSignUpMod(false);
-    setLogInMod(false);
-    setUserCredMod(true);
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [error, setError] = useState(null);
 
   // Firebase references:
   const addPostRef = collection(db, "posts");
+
+  // console.log("Rendering App Component.");
+
+  const showModal = (type) => {
+    if (type === "login") {
+      setLogInMod(true);
+      setSignUpMod(false);
+      setUserCredMod(false);
+    } else if (type === "signup") {
+      setLogInMod(false);
+      setSignUpMod(true);
+      setUserCredMod(false);
+    } else if (type === "usercred") {
+      setLogInMod(false);
+      setSignUpMod(false);
+      setUserCredMod(true);
+    }
+  };
+
+  const closeModal = () => {
+    console.log("logout");
+    setLogInMod(false);
+    setSignUpMod(false);
+    setUserCredMod(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,6 +97,7 @@ function App() {
   }, [authenticate]);
 
   const registerUser = async (email, password) => {
+    console.log(email, password);
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -97,10 +107,26 @@ function App() {
       const user = userCredential.user;
       // do something with user, or return it
       console.log(user.uid);
+      closeModal();
       return user;
     } catch (error) {
+      let message;
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          break;
+        case "auth/missing-password":
+          break;
+        case "auth/invalid-email":
+          break;
+        case "auth/weak-password":
+          break;
+        default:
+          message = "Error occurred during register.";
+      }
+      setError(message);
       console.error(`Error: ${error.code}`, error.message);
-      throw error;
+      return Promise.reject(error);
+      // throw error;
     }
   };
 
@@ -113,28 +139,37 @@ function App() {
         password
       );
       const user = userCredential.user;
-      return user;
+      console.log(user);
+      closeModal();
+      return Promise.resolve(user);
+      // return user;
     } catch (error) {
-      console.log(`Error: ${error.code}`, error.message);
-      throw error;
+      let message;
+      switch (error.code) {
+        case "auth/user-not-found":
+          message = "No user found with this email.";
+          break;
+        case "auth/wrong-password":
+          message = "Wrong password.";
+          break;
+        case "auth/invalid-email":
+          message = "Email address is not valid.";
+          break;
+        // handle more error codes...
+        default:
+          message = "An error occurred.";
+          break;
+      }
+      setError(message);
+      console.log(`Error: ${error.code}`);
+      return Promise.reject(error);
+      // throw error;
     }
   };
 
   const signOutUser = async () => {
     await signOut(auth);
   };
-
-  const closeModal = () => {
-    // setLogInModal(false);
-    setLogInMod(false);
-    setSignUpMod(false);
-    setUserCredMod(false);
-  };
-
-  // const openModal = () => {
-  //   console.log("openModal log");
-  //   setLogInModal(true);
-  // };
 
   const handlePostCreation = (postTitle, postContent, form) => {
     addDoc(addPostRef, {
@@ -158,7 +193,6 @@ function App() {
         logInModal,
         setLogInModal,
         closeModal,
-        // openModal,
         user,
         signOutUser,
         signInUser,
@@ -167,9 +201,14 @@ function App() {
         signUpMod,
         logInMod,
         userCredMod,
-        showLogInMod,
-        showSignUpMod,
-        showUserCredMod,
+        showModal,
+        setEmail,
+        setPassword,
+        setUsername,
+        email,
+        password,
+        setError,
+        error,
       }}
     >
       <BrowserRouter>

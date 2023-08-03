@@ -181,7 +181,8 @@ button:not(:disabled):active {
 .log_in_button .log_out {
   width: 70%;
   font-size: 50%;
-  border: 50px solid orange;
+  border: 1px solid gray;
+  background: transparent;
 }
 
 /* LOGINMODAL.JSX */

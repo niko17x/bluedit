@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
 import { DataContext } from "../App";
+import useResetErrorTimeout from "./hooks/useResetErrorTimeout";
 
 const SignUpModal = () => {
-  const { closeModal, handleAuth, showUserCredMod, showLogInMod } =
+  const { closeModal, showModal, error, setError, setEmail } =
     useContext(DataContext);
+
+  const resetErrorTimeout = useResetErrorTimeout();
 
   return (
     <div className="log_in_modal--container">
@@ -11,7 +14,20 @@ const SignUpModal = () => {
         <button className="modal-close" type="button" onClick={closeModal}>
           X
         </button>
-        <form className="log_in_form sign_in--form" id="sign_in--form">
+        <form
+          className="log_in_form sign_in--form"
+          id="sign_in--form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const email = e.target.elements.email.value;
+            if (email !== "") {
+              showModal("usercred");
+            } else {
+              setError("Please enter an email.");
+              resetErrorTimeout();
+            }
+          }}
+        >
           <div className="terms">
             <h2>Sign Up</h2>
             <p>
@@ -33,14 +49,24 @@ const SignUpModal = () => {
               name="email"
               id="email"
               placeholder="EMAIL"
+              onChange={(e) => {
+                // console.log(e.target.value);
+                setEmail(e.target.value);
+              }}
             ></input>
           </label>
-          <button type="button" onClick={showUserCredMod}>
-            Continue
-          </button>
+          {error && <div>{error}</div>}
+          <button type="submit">Continue</button>
           <div>
             Already a redditor?
-            <a onClick={showLogInMod}> Log In</a>
+            <a
+              onClick={(e) => {
+                showModal("login");
+              }}
+            >
+              {" "}
+              Log In
+            </a>
           </div>
         </form>
       </div>

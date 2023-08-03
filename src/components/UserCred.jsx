@@ -1,8 +1,18 @@
 import React, { useContext } from "react";
 import { DataContext } from "../App";
+import useResetErrorTimeout from "./hooks/useResetErrorTimeout";
 
 const UserCred = () => {
-  const { closeModal, handleAuth } = useContext(DataContext);
+  const {
+    registerUser,
+    closeModal,
+    setPassword,
+    setUsername,
+    email,
+    password,
+    error,
+  } = useContext(DataContext);
+  const resetErrorTimeout = useResetErrorTimeout();
 
   return (
     <div className="log_in_modal--container">
@@ -10,7 +20,16 @@ const UserCred = () => {
         <button className="modal-close" type="button" onClick={closeModal}>
           X
         </button>
-        <form className="log_in_form sign_in--form" id="sign_in--form">
+        <form
+          className="log_in_form sign_in--form"
+          id="sign_in--form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const username = e.target.elements.username.value;
+            const password = e.target.elements.password.value;
+            registerUser(email, password).catch(() => resetErrorTimeout());
+          }}
+        >
           <div className="terms">
             <h2>Create your username and password</h2>
             <p>
@@ -25,6 +44,7 @@ const UserCred = () => {
               name="username"
               id="username"
               placeholder="Username"
+              onChange={(e) => setUsername(e.target.username)}
             ></input>
           </label>
           <label>
@@ -33,9 +53,12 @@ const UserCred = () => {
               name="password"
               id="password"
               placeholder="Password"
+              onChange={(e) => setPassword(e.target.password)}
             ></input>
           </label>
-          <button type="button">Continue</button>
+          {error && <div>{error}</div>}
+
+          <button type="submit">Continue</button>
         </form>
       </div>
     </div>
