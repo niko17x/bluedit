@@ -9,8 +9,8 @@ const UserCred = () => {
     setPassword,
     setUsername,
     email,
-    password,
     error,
+    password,
   } = useContext(DataContext);
   const resetErrorTimeout = useResetErrorTimeout();
 
@@ -25,8 +25,6 @@ const UserCred = () => {
           id="sign_in--form"
           onSubmit={(e) => {
             e.preventDefault();
-            const username = e.target.elements.username.value;
-            const password = e.target.elements.password.value;
             registerUser(email, password).catch(() => resetErrorTimeout());
           }}
         >
@@ -40,11 +38,11 @@ const UserCred = () => {
           </div>
           <label htmlFor="username">
             <input
-              type="username"
+              type="text"
               name="username"
               id="username"
               placeholder="Username"
-              onChange={(e) => setUsername(e.target.username)}
+              onChange={(e) => setUsername(e.target.value)}
             ></input>
           </label>
           <label>
@@ -53,11 +51,10 @@ const UserCred = () => {
               name="password"
               id="password"
               placeholder="Password"
-              onChange={(e) => setPassword(e.target.password)}
+              onChange={(e) => setPassword(e.target.value)}
             ></input>
           </label>
           {error && <div>{error}</div>}
-
           <button type="submit">Continue</button>
         </form>
       </div>

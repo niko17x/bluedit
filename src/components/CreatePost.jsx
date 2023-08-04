@@ -27,7 +27,6 @@ const CreatePost = () => {
         <form className="create_post--form" onSubmit={handleSubmit}>
           <div className="title">
             <label htmlFor="title"></label>
-            {/* <input type="text" id="title" name="title" placeholder="Title" /> */}
             <textarea
               id="title"
               name="title"

@@ -7,16 +7,15 @@ import FilterPosts from "../components/FilterPosts";
 import SidebarActions from "../components/SidebarActions";
 import SidebarTC from "../components/SidebarTC";
 import { DataContext } from "../App";
-import LogInModal from "../components/LogInModal";
 
 const HomePage = () => {
-  const { logInModal, openModal } = useContext(DataContext);
+  const { user } = useContext(DataContext);
   return (
     <>
       <Navbar />
       <div className="main_content">
         <div className="main_posts">
-          <CreatePostInput />
+          {user ? <CreatePostInput /> : null}
           <FilterPosts />
           <Post />
         </div>

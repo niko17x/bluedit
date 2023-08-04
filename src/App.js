@@ -5,13 +5,10 @@ import { useState, useEffect } from "react";
 import HomePage from "./pages/HomePage";
 import PostsPage from "./pages/PostsPage";
 import CreatePost from "./components/CreatePost";
-import SignUp from "./components/SignUp";
-import UserSignIn from "./components/UserSignIn";
 import { db, auth } from "./lib/firebase";
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithCredential,
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
@@ -23,9 +20,10 @@ import {
   orderBy,
   serverTimestamp,
   addDoc,
-  and,
+  setDoc,
+  getDoc,
+  doc,
 } from "firebase/firestore";
-import SignUpModal from "./components/SignUpModal";
 
 export const DataContext = createContext(); // Out of component to prevent re-renders.
 
@@ -44,11 +42,36 @@ function App() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState(null);
+  const [userId, setUserId] = useState("");
 
   // Firebase references:
   const addPostRef = collection(db, "posts");
-
-  // console.log("Rendering App Component.");
+  // Retrieve username from currently logged in user:
+  onAuthStateChanged(authenticate, (user) => {
+    if (!user) {
+      console.log("No user currently logged in.");
+      setUserId(null);
+      return;
+    }
+    const fetchUserDoc = async () => {
+      try {
+        const currentUserId = user.uid;
+        const docRef = doc(db, "users", currentUserId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setUserId(docSnap.data().username);
+          console.log(
+            `User ID: ${docSnap.id}, Username: ${docSnap.data().username}`
+          );
+        } else {
+          console.log("No such doc exists!");
+        }
+      } catch (error) {
+        console.error("Error fetching user document:", error);
+      }
+    };
+    fetchUserDoc();
+  });
 
   const showModal = (type) => {
     if (type === "login") {
@@ -105,8 +128,7 @@ function App() {
         password
       );
       const user = userCredential.user;
-      // do something with user, or return it
-      console.log(user.uid);
+      await setDoc(doc(db, "users", user.uid), { username });
       closeModal();
       return user;
     } catch (error) {
@@ -209,6 +231,7 @@ function App() {
         password,
         setError,
         error,
+        userId,
       }}
     >
       <BrowserRouter>

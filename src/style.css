@@ -179,7 +179,6 @@ button:not(:disabled):active {
 }
 
 .log_in_button .log_out {
-  width: 70%;
   font-size: 50%;
   border: 1px solid gray;
   background: transparent;
@@ -204,7 +203,7 @@ button:not(:disabled):active {
   justify-content: center;
   backdrop-filter: blur(25px);
   transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.65);
+  background-color: rgba(40, 40, 40, 0.65);
   box-shadow:
     rgba(0, 0, 0, 0.16) 0px 3px 6px,
     rgba(0, 0, 0, 0.23) 0px 3px 6px;
@@ -340,22 +339,21 @@ button:not(:disabled):active {
 /* FILTERPOSTS.JSX */
 
 .filter_posts--container {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  background-color: #38383d;
   height: 40px;
+  display: grid;
+  color: gray;
   padding: 2rem;
   border-radius: 5px;
   align-content: center;
-  color: gray;
-  grid-row-start: 2;
+  background-color: #38383d;
+  grid-template-columns: repeat(7, 1fr);
 }
 
 .filter_posts--container div {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   align-items: center;
   justify-items: center;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .filter_posts--container span {
