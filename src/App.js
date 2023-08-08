@@ -27,8 +27,8 @@ import {
 
 export const DataContext = createContext(); // Out of component to prevent re-renders.
 
-// Firebase authentication:
 const authenticate = getAuth();
+const addPostRef = collection(db, "posts");
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -40,17 +40,13 @@ function App() {
   const [userCredMod, setUserCredMod] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
   const [error, setError] = useState(null);
-  const [userId, setUserId] = useState("");
+  const [username, setUsername] = useState("");
 
-  // Firebase references:
-  const addPostRef = collection(db, "posts");
-  // Retrieve username from currently logged in user:
+  // Retrieve the current user id from fb auth, matches to id in firestore to obtain user username:
   onAuthStateChanged(authenticate, (user) => {
+    console.log("onAuthStateChanged logged.");
     if (!user) {
-      console.log("No user currently logged in.");
-      setUserId(null);
       return;
     }
     const fetchUserDoc = async () => {
@@ -59,10 +55,7 @@ function App() {
         const docRef = doc(db, "users", currentUserId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setUserId(docSnap.data().username);
-          console.log(
-            `User ID: ${docSnap.id}, Username: ${docSnap.data().username}`
-          );
+          setUsername(docSnap.data().username);
         } else {
           console.log("No such doc exists!");
         }
@@ -72,6 +65,8 @@ function App() {
     };
     fetchUserDoc();
   });
+
+  // Retrieve the username of the post.
 
   const showModal = (type) => {
     if (type === "login") {
@@ -111,16 +106,18 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(authenticate, (currentUser) => {
+      console.log("log");
       setUser(currentUser);
     });
     // Cleanup on unmount:
     return () => {
       unsubscribe();
+      setUsername(null);
     };
   }, [authenticate]);
 
   const registerUser = async (email, password) => {
-    console.log(email, password);
+    // console.log(email, password);
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -196,12 +193,14 @@ function App() {
   const handlePostCreation = (postTitle, postContent, form) => {
     addDoc(addPostRef, {
       createdAt: serverTimestamp(),
+      username: username,
       postTitle: postTitle,
       postContent: postContent,
       upVotes: 0,
       downVotes: 0,
       // updatedAt: ,
     })
+      .then(() => console.log(username))
       .then(() => form.reset())
       .then(() => console.log("Successfully added new document."))
       .catch(() => console.log("Error in submitting form."));
@@ -226,12 +225,12 @@ function App() {
         showModal,
         setEmail,
         setPassword,
+        username,
         setUsername,
         email,
         password,
         setError,
         error,
-        userId,
       }}
     >
       <BrowserRouter>

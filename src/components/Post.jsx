@@ -1,8 +1,10 @@
 import React, { useContext } from "react";
 import { DataContext } from "../App";
+import { db } from "../lib/firebase";
 
 export const Post = () => {
   const { posts } = useContext(DataContext);
+
   return (
     <>
       {posts.map((post) => {
@@ -16,7 +18,7 @@ export const Post = () => {
             <div className="main">
               <div className="post_data">
                 <div className="user_id_post">
-                  <span>Posted by u/DemoUser3819 </span>
+                  <span>Posted by u/{post.username}</span>
                 </div>
                 <button type="button">Join</button>
               </div>

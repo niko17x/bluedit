@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { DataContext } from "../App";
 
 const CreatePost = () => {
-  const { handlePostCreation } = useContext(DataContext);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const postTitle = form.elements.title.value;
-    const postContent = form.elements.content.value;
-    handlePostCreation(postTitle, postContent, form);
+  const { handlePostCreation, username } = useContext(DataContext);
+  const [title, setTitle] = useState("");
+  const [post, setPost] = useState("");
+
+  const resetInputs = () => {
+    setTitle("");
+    setPost("");
   };
 
   return (
@@ -24,7 +24,14 @@ const CreatePost = () => {
           <button>📸 Image & Video</button>
           <button>🔗 Link</button>
         </div>
-        <form className="create_post--form" onSubmit={handleSubmit}>
+        <form
+          className="create_post--form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handlePostCreation(title, post, e.target);
+            resetInputs();
+          }}
+        >
           <div className="title">
             <label htmlFor="title"></label>
             <textarea
@@ -32,6 +39,7 @@ const CreatePost = () => {
               name="title"
               placeholder="Title"
               maxLength={300}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           <div className="textarea">
@@ -40,6 +48,7 @@ const CreatePost = () => {
               id="content"
               name="content"
               placeholder="What's on your mind today?"
+              onChange={(e) => setPost(e.target.value)}
             />
           </div>
           <div className="divider"></div>

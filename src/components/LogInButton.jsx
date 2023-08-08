@@ -3,12 +3,12 @@ import { DataContext } from "../App";
 import { Link } from "react-router-dom";
 
 const LogInButton = () => {
-  const { user, signOutUser, showModal, userId } = useContext(DataContext);
+  const { user, signOutUser, showModal, username } = useContext(DataContext);
   return (
     <div className="log_in_button">
       {user ? (
         <>
-          <div>{userId}</div>
+          <div>{username}</div>
           <button className="log_out" type="button" onClick={signOutUser}>
             ⎋ Log Out
           </button>
