@@ -9,8 +9,12 @@
 [*] : Add user "username" to the database for rendering to post.
 • "Post Page" can only be invoked when a user is signed in.
 • If user is not valid, render a modal that tells user "you must be signed in first in order to post.".
-[] : Add the actual username to the post that is being created instead of the demo username.
+[*] : Add the actual username to the post that is being created instead of the demo username.
 • Bug => The username is only attached to the first post created. If creating another post with the same user/username, the username is just an empty string.
+[] : Clicking on a post takes user to post page.
+• User click on a post and is taken to the corresponding page with that specific post.
+• Use the post id for unique page identifier.
+[] : Allow post to be deleted by the author.
 
 ### Todo (after 90% completion):
 

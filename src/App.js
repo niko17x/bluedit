@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import HomePage from "./pages/HomePage";
 import PostsPage from "./pages/PostsPage";
 import CreatePost from "./components/CreatePost";
+import { Post } from "./components/Post";
 import { db, auth } from "./lib/firebase";
 import {
   getAuth,
@@ -32,7 +33,6 @@ const addPostRef = collection(db, "posts");
 
 function App() {
   const [posts, setPosts] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(false);
   const [logInModal, setLogInModal] = useState(false);
   const [user, setUser] = useState({}); // Firebase store user object.
   const [logInMod, setLogInMod] = useState(false);
@@ -44,29 +44,40 @@ function App() {
   const [username, setUsername] = useState("");
 
   // Retrieve the current user id from fb auth, matches to id in firestore to obtain user username:
-  onAuthStateChanged(authenticate, (user) => {
-    console.log("onAuthStateChanged logged.");
-    if (!user) {
-      return;
-    }
-    const fetchUserDoc = async () => {
-      try {
-        const currentUserId = user.uid;
-        const docRef = doc(db, "users", currentUserId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setUsername(docSnap.data().username);
-        } else {
-          console.log("No such doc exists!");
-        }
-      } catch (error) {
-        console.error("Error fetching user document:", error);
-      }
-    };
-    fetchUserDoc();
-  });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(authenticate, (user) => {
+      if (user) {
+        setUser(user);
 
-  // Retrieve the username of the post.
+        // Fetch the username
+        const fetchUserDoc = async () => {
+          try {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              setUsername(docSnap.data().username); // Set the username here
+            } else {
+              console.log("No such document!");
+            }
+          } catch (error) {
+            console.error("Error fetching user document:", error);
+          }
+        };
+        fetchUserDoc();
+      } else {
+        // User is signed out.
+        setUser(null);
+        setUsername(""); // Reset the username to empty string.
+      }
+    });
+
+    // Cleanup on unmount:
+    return () => {
+      unsubscribe();
+      setUsername("");
+      setUser(null);
+    };
+  }, [authenticate]);
 
   const showModal = (type) => {
     if (type === "login") {
@@ -91,6 +102,7 @@ function App() {
     setUserCredMod(false);
   };
 
+  // Retreive and store "posts" from FB to useState:
   useEffect(() => {
     const fetchData = async () => {
       const que = query(collection(db, "posts"), orderBy("createdAt", "desc"));
@@ -103,18 +115,6 @@ function App() {
     };
     fetchData();
   }, []);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(authenticate, (currentUser) => {
-      console.log("log");
-      setUser(currentUser);
-    });
-    // Cleanup on unmount:
-    return () => {
-      unsubscribe();
-      setUsername(null);
-    };
-  }, [authenticate]);
 
   const registerUser = async (email, password) => {
     // console.log(email, password);
@@ -198,6 +198,7 @@ function App() {
       postContent: postContent,
       upVotes: 0,
       downVotes: 0,
+      comments: 0,
       // updatedAt: ,
     })
       .then(() => console.log(username))
@@ -210,14 +211,15 @@ function App() {
     <DataContext.Provider
       value={{
         posts,
-        loggedIn,
         logInModal,
         setLogInModal,
         closeModal,
+        handlePostCreation,
+        email,
+        password,
         user,
         signOutUser,
         signInUser,
-        handlePostCreation,
         registerUser,
         signUpMod,
         logInMod,
@@ -227,8 +229,6 @@ function App() {
         setPassword,
         username,
         setUsername,
-        email,
-        password,
         setError,
         error,
       }}
@@ -238,6 +238,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/posts-page" element={<PostsPage />} />
           <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/post/:postId" element={<PostsPage />} />
           {/* <Route path="/sign-in" element={<UserSignIn />} /> */}
         </Routes>
       </BrowserRouter>

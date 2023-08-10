@@ -9,6 +9,8 @@
 :root {
   --link-color: rgb(37, 153, 255);
   --main-color: rgb(51, 111, 221);
+  --main-text-color: rgb(170, 177, 184);
+  --secondary-text-color: rgb(119, 124, 129);
 }
 
 body {
@@ -19,6 +21,7 @@ body {
 
 a {
   color: var(--link-color);
+  text-decoration: none;
 }
 
 input,
@@ -494,14 +497,14 @@ button:not(:disabled):active {
 /* POST.JSX */
 
 .post--container {
-  display: grid;
-  grid-template-columns: min-content 1fr;
   gap: 1rem;
+  display: grid;
   padding: 1rem;
-  border: 1px solid transparent;
-  background-color: #38383d;
   color: white;
   border-radius: 5px;
+  background-color: #38383d;
+  border: 1px solid transparent;
+  grid-template-columns: min-content 1fr;
 }
 
 .post_data {
@@ -581,11 +584,14 @@ button:not(:disabled):active {
   top: 10%;
   left: 50%;
   transform: translate(-50%, -10%);
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  color: var(--main-text-color);
 }
 
 .posts_page--container .user_id {
   font-size: 18px;
-  color: lightgray;
+  color: var(--secondary-text-color);
 }
 
 .posts_page--container .post_title {
@@ -593,13 +599,34 @@ button:not(:disabled):active {
   font-weight: 600;
 }
 
-.user_votes {
+.posts_page--container .body {
   display: grid;
-  grid-template-columns: repeat(3, min-content);
-  align-items: center;
+  gap: 1rem;
 }
 
-.engagement_panel {
+.posts_page--container .user_comments,
+.posts_page--container .share_content {
+  gap: 0.5rem;
+  display: grid;
+  white-space: nowrap;
+  place-content: center;
+  grid-template-columns: 1fr 1fr 1fr;
+  background-color: transparent;
+  border-radius: none;
+}
+
+.posts_page--container .user_votes {
+  gap: 0.5rem;
+  display: grid;
+  place-items: center;
+  grid-template-rows: repeat(3, min-content);
+}
+
+.posts_page--container .user_votes button {
+  color: var(--secondary-text-color);
+}
+
+.posts_page--container .engagement_panel {
   gap: 2rem;
   display: grid;
   grid-template-columns: repeat(3, min-content);
