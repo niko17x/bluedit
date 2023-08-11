@@ -14,17 +14,17 @@ const Comments = () => {
           This is an example user post fetched from Firebase.
         </div>
         <div className="user_engagement">
-          <div className="vote_count engagement_button">
+          <div className="vote_count">
             <button className="up_vote">⬆</button>
             <div className="number_of_votes">77</div>
             <button className="down_vote">⬇</button>
           </div>
-          <div className="replies engagement_button">
+          <div className="replies">
             <button type="button">
               💬 <span>Reply</span>
             </button>
           </div>
-          <div className="share_post engagement_button">
+          <div className="share_post">
             <button type="button">
               ⌲ <span>Share</span>
             </button>

@@ -1,11 +1,16 @@
 import React, { createContext } from "react";
 import "./style.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  redirect,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
 import HomePage from "./pages/HomePage";
-import PostsPage from "./pages/PostsPage";
+import DisplayDetailedPost from "./pages/DisplayDetailedPost";
 import CreatePost from "./components/CreatePost";
-import { Post } from "./components/Post";
 import { db, auth } from "./lib/firebase";
 import {
   getAuth,
@@ -15,21 +20,23 @@ import {
   signOut,
 } from "firebase/auth";
 import {
-  getDocs,
   collection,
   query,
   orderBy,
   serverTimestamp,
+  doc,
+  getDocs,
   addDoc,
   setDoc,
   getDoc,
-  doc,
+  deleteDoc,
 } from "firebase/firestore";
 
 export const DataContext = createContext(); // Out of component to prevent re-renders.
 
 const authenticate = getAuth();
 const addPostRef = collection(db, "posts");
+// const navigation = useNavigation();
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -42,14 +49,13 @@ function App() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [username, setUsername] = useState("");
+  const [deleteCollection, setDeleteCollection] = useState("");
 
   // Retrieve the current user id from fb auth, matches to id in firestore to obtain user username:
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(authenticate, (user) => {
       if (user) {
         setUser(user);
-
-        // Fetch the username
         const fetchUserDoc = async () => {
           try {
             const docRef = doc(db, "users", user.uid);
@@ -65,19 +71,25 @@ function App() {
         };
         fetchUserDoc();
       } else {
-        // User is signed out.
         setUser(null);
         setUsername(""); // Reset the username to empty string.
       }
     });
-
-    // Cleanup on unmount:
     return () => {
       unsubscribe();
       setUsername("");
       setUser(null);
     };
   }, [authenticate]);
+
+  // Todo: Learn more about react-router-dom "navigate" hook to re-route user to homepage after post deletion:
+  const handlePostDeletion = async (id) => {
+    const postRef = doc(db, "posts", id);
+    await deleteDoc(postRef);
+    // !
+    navigate("/");
+    // return redirect("/");
+  };
 
   const showModal = (type) => {
     if (type === "login") {
@@ -96,7 +108,6 @@ function App() {
   };
 
   const closeModal = () => {
-    console.log("logout");
     setLogInMod(false);
     setSignUpMod(false);
     setUserCredMod(false);
@@ -150,7 +161,6 @@ function App() {
   };
 
   const signInUser = async (email, password) => {
-    console.log("log");
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -158,10 +168,8 @@ function App() {
         password
       );
       const user = userCredential.user;
-      console.log(user);
       closeModal();
       return Promise.resolve(user);
-      // return user;
     } catch (error) {
       let message;
       switch (error.code) {
@@ -174,7 +182,6 @@ function App() {
         case "auth/invalid-email":
           message = "Email address is not valid.";
           break;
-        // handle more error codes...
         default:
           message = "An error occurred.";
           break;
@@ -194,6 +201,7 @@ function App() {
     addDoc(addPostRef, {
       createdAt: serverTimestamp(),
       username: username,
+      userId: user.uid,
       postTitle: postTitle,
       postContent: postContent,
       upVotes: 0,
@@ -215,6 +223,7 @@ function App() {
         setLogInModal,
         closeModal,
         handlePostCreation,
+        handlePostDeletion,
         email,
         password,
         user,
@@ -236,10 +245,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/posts-page" element={<PostsPage />} />
+          {/* <Route path="/posts-page" element={<PostsPage />} /> */}
           <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/post/:postId" element={<PostsPage />} />
-          {/* <Route path="/sign-in" element={<UserSignIn />} /> */}
+          <Route path="/post/:postId" element={<DisplayDetailedPost />} />
         </Routes>
       </BrowserRouter>
     </DataContext.Provider>

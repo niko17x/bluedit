@@ -11,12 +11,17 @@
 • If user is not valid, render a modal that tells user "you must be signed in first in order to post.".
 [*] : Add the actual username to the post that is being created instead of the demo username.
 • Bug => The username is only attached to the first post created. If creating another post with the same user/username, the username is just an empty string.
-[] : Clicking on a post takes user to post page.
+[*] : Clicking on a post takes user to post page.
 • User click on a post and is taken to the corresponding page with that specific post.
 • Use the post id for unique page identifier.
-[] : Allow post to be deleted by the author.
+[*] : Allow post to be deleted by the author.
+• Add a trash can to symbolize option delete post if author is signed in.
+[] : Deleting a post by the author should re-route the page to the homepage.
+• Display "Post has been deleted" message after post deletion => re-route homepage.
 
 ### Todo (after 90% completion):
 
 [] : Use Firebase cloud functions to automatically delete/remove users/accounts when deleted.
 [] : Handle the multiple replications of console logs during page initiation.
+[] : Every time component renders, 'isAuthorLoggedIn' is invoked potentially making it expensive. Given that you've already fetched the post with 'showPost', you could also determine if the author is logged in outside of the function and store that as a constant in 'DisplayedDetailedPost.jsx'.
+[] : Move the modal functions to its own separate file from the App.jsx file.

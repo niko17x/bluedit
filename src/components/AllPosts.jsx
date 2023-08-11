@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { DataContext } from "../App";
 import { Link } from "react-router-dom";
 
-export const Post = () => {
+export const AllPosts = () => {
   const { posts } = useContext(DataContext);
 
   return (

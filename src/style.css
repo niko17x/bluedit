@@ -691,11 +691,6 @@ button:not(:disabled):active {
   gap: 1rem;
 }
 
-.comments--container .user_engagement {
-  display: grid;
-  grid-template-columns: repeat(3, min-content);
-}
-
 .comments--container .vote_count {
   display: grid;
   grid-template-columns: repeat(3, min-content);
@@ -707,22 +702,23 @@ button:not(:disabled):active {
 }
 
 .user_engagement {
-  display: grid;
   gap: 1.5rem;
+  display: grid;
   color: lightgray;
+  grid-template-columns: repeat(4, min-content);
 }
 
-.engagement_button {
+.user_engagement > * {
   display: grid;
   align-items: center;
 }
 
-.engagement_button button {
+.user_engagement button {
   all: unset;
   white-space: nowrap;
 }
 
-.engagement_button span {
+.user_engagement span {
   margin-left: 0.3rem;
 }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Post } from "../components/Post";
+import { AllPosts } from "../components/AllPosts";
 import Navbar from "../components/Navbar";
 import CreatePostInput from "../components/CreatePostInput";
 import SidebarTryPremium from "../components/SidebarTryPremium";
@@ -17,7 +17,7 @@ const HomePage = () => {
         <div className="main_posts">
           {user ? <CreatePostInput /> : null}
           <FilterPosts />
-          <Post />
+          <AllPosts />
         </div>
         <div className="main_sidebar">
           <SidebarTryPremium />
