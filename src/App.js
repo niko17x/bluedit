@@ -1,16 +1,11 @@
 import React, { createContext } from "react";
 import "./style.css";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useNavigate,
-  redirect,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import HomePage from "./pages/HomePage";
 import DisplayDetailedPost from "./pages/DisplayDetailedPost";
 import CreatePost from "./components/CreatePost";
+import { fetchPosts } from "./components/utils/fetchPosts";
 import { db, auth } from "./lib/firebase";
 import {
   getAuth,
@@ -36,7 +31,6 @@ export const DataContext = createContext(); // Out of component to prevent re-re
 
 const authenticate = getAuth();
 const addPostRef = collection(db, "posts");
-// const navigation = useNavigation();
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -82,13 +76,39 @@ function App() {
     };
   }, [authenticate]);
 
-  // Todo: Learn more about react-router-dom "navigate" hook to re-route user to homepage after post deletion:
   const handlePostDeletion = async (id) => {
-    const postRef = doc(db, "posts", id);
-    await deleteDoc(postRef);
-    // !
-    navigate("/");
-    // return redirect("/");
+    try {
+      console.log("Post has been successfully delete.");
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const postRef = doc(db, "posts", id);
+      await deleteDoc(postRef);
+      const updatedPosts = await fetchPosts();
+      setPosts(updatedPosts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlePostCreation = async (postTitle, postContent, form) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await addDoc(addPostRef, {
+        createdAt: serverTimestamp(),
+        username: username,
+        userId: user.uid,
+        postTitle: postTitle,
+        postContent: postContent,
+        upVotes: 0,
+        downVotes: 0,
+        comments: 0,
+      });
+      form.reset();
+      const updatedPosts = await fetchPosts();
+      setPosts(updatedPosts);
+      console.log("Post has been successfully created.");
+    } catch (error) {
+      console.log("Error: ", error);
+    }
   };
 
   const showModal = (type) => {
@@ -116,13 +136,8 @@ function App() {
   // Retreive and store "posts" from FB to useState:
   useEffect(() => {
     const fetchData = async () => {
-      const que = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(que);
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPosts(data);
+      const getPosts = await fetchPosts();
+      setPosts(getPosts);
     };
     fetchData();
   }, []);
@@ -195,24 +210,6 @@ function App() {
 
   const signOutUser = async () => {
     await signOut(auth);
-  };
-
-  const handlePostCreation = (postTitle, postContent, form) => {
-    addDoc(addPostRef, {
-      createdAt: serverTimestamp(),
-      username: username,
-      userId: user.uid,
-      postTitle: postTitle,
-      postContent: postContent,
-      upVotes: 0,
-      downVotes: 0,
-      comments: 0,
-      // updatedAt: ,
-    })
-      .then(() => console.log(username))
-      .then(() => form.reset())
-      .then(() => console.log("Successfully added new document."))
-      .catch(() => console.log("Error in submitting form."));
   };
 
   return (

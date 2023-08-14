@@ -1,14 +1,21 @@
 import React, { useContext, useState } from "react";
 import { DataContext } from "../App";
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
   const { handlePostCreation, username } = useContext(DataContext);
   const [title, setTitle] = useState("");
   const [post, setPost] = useState("");
+  const navigate = useNavigate();
 
   const resetInputs = () => {
     setTitle("");
     setPost("");
+  };
+
+  const onCreate = async (title, post, form) => {
+    await handlePostCreation(title, post, form);
+    navigate("/");
   };
 
   return (
@@ -28,7 +35,8 @@ const CreatePost = () => {
           className="create_post--form"
           onSubmit={(e) => {
             e.preventDefault();
-            handlePostCreation(title, post, e.target);
+            // handlePostCreation(title, post, e.target);
+            onCreate(title, post, e.target);
             resetInputs();
           }}
         >

@@ -16,8 +16,9 @@
 • Use the post id for unique page identifier.
 [*] : Allow post to be deleted by the author.
 • Add a trash can to symbolize option delete post if author is signed in.
-[] : Deleting a post by the author should re-route the page to the homepage.
+[*] : Deleting a post by the author should re-route the page to the homepage.
 • Display "Post has been deleted" message after post deletion => re-route homepage.
+[] : After post creation by author, page should be redirected to the "detailed post page".
 
 ### Todo (after 90% completion):
 
@@ -25,3 +26,9 @@
 [] : Handle the multiple replications of console logs during page initiation.
 [] : Every time component renders, 'isAuthorLoggedIn' is invoked potentially making it expensive. Given that you've already fetched the post with 'showPost', you could also determine if the author is logged in outside of the function and store that as a constant in 'DisplayedDetailedPost.jsx'.
 [] : Move the modal functions to its own separate file from the App.jsx file.
+[] : React router dom "useNavigate" is being used in multiple components. Can the DRY principle be applied here?
+
+### What I've Learned:
+
+• Async and await are used to resolve a promise. Basically saying surrounding code should temporarily halt until the Promise has been resolved.
+• "try...catch" blocks aren't always necessary but does allow you to keep code more organized and better error handling. Controlling the flow of the code is also improved. If an error is the result, then you can handle that part of the code.

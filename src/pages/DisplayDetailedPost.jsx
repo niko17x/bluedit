@@ -2,18 +2,23 @@ import React, { useContext } from "react";
 import Comments from "../components/Comments";
 import Divider from "../components/Divider";
 import { DataContext } from "../App";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const DisplayDetailedPost = () => {
   const { posts, user, handlePostDeletion } = useContext(DataContext);
   const { postId } = useParams();
   const getPost = posts.find((post) => post.id === postId);
+  const authorIsLoggedIn = user && getPost.userId === user.uid;
+  const navigate = useNavigate();
 
   if (!getPost) {
     return <div>Post not found</div>;
   }
 
-  const authorIsLoggedIn = user && getPost.userId === user.uid;
+  const onDelete = async (id) => {
+    await handlePostDeletion(id);
+    navigate("/");
+  };
 
   return (
     <div className="posts_page--container" key={getPost.id}>
@@ -46,7 +51,7 @@ const DisplayDetailedPost = () => {
           </div>
           {authorIsLoggedIn ? (
             <div>
-              <button type="button" onClick={(e) => handlePostDeletion(postId)}>
+              <button type="button" onClick={(e) => onDelete(postId)}>
                 🗑️ <span>Delete</span>
               </button>
             </div>
