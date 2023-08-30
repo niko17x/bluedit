@@ -1,6 +1,7 @@
 import React from "react";
 
 const Comments = () => {
+  // Should be mapped to the FB "comments" data.
   return (
     <div className="comments--container">
       <div className="profile_image">

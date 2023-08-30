@@ -1,6 +1,6 @@
 import React, { createContext } from "react";
 import "./style.css";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import HomePage from "./pages/HomePage";
 import DisplayDetailedPost from "./pages/DisplayDetailedPost";
@@ -16,11 +16,8 @@ import {
 } from "firebase/auth";
 import {
   collection,
-  query,
-  orderBy,
   serverTimestamp,
   doc,
-  getDocs,
   addDoc,
   setDoc,
   getDoc,
@@ -39,11 +36,14 @@ function App() {
   const [logInMod, setLogInMod] = useState(false);
   const [signUpMod, setSignUpMod] = useState(false);
   const [userCredMod, setUserCredMod] = useState(false);
+  const [deletePostMod, setDeletePostMod] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [username, setUsername] = useState("");
-  const [deleteCollection, setDeleteCollection] = useState("");
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [forceRender, setForceRender] = useState(0);
 
   // Retrieve the current user id from fb auth, matches to id in firestore to obtain user username:
   useEffect(() => {
@@ -55,8 +55,10 @@ function App() {
             const docRef = doc(db, "users", user.uid);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-              setUsername(docSnap.data().username); // Set the username here
-            } else {
+              setUsername(docSnap.data().username);
+            }
+            // Set the username here
+            else {
               console.log("No such document!");
             }
           } catch (error) {
@@ -76,31 +78,55 @@ function App() {
     };
   }, [authenticate]);
 
-  const handlePostDeletion = async (id) => {
+  const deletePost = async (id, pageId) => {
     try {
-      console.log("Post has been successfully delete.");
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       const postRef = doc(db, "posts", id);
       await deleteDoc(postRef);
       const updatedPosts = await fetchPosts();
       setPosts(updatedPosts);
+      console.log("Post has been successfully delete.");
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handlePostCreation = async (postTitle, postContent, form) => {
+  const deleteUserPostVotesId = async (pageId) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const postVotesIdRef = doc(
+        db,
+        `users/${authenticate.currentUser.uid}/postVotes/${pageId}`
+      );
+      await deleteDoc(postVotesIdRef);
+      console.log("User postVotes ID deleted successfully.");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlePostDeletion = async (pageId) => {
+    deletePost(pageId);
+    deleteUserPostVotesId(pageId);
+  };
+
+  const handlePostCreation = async (postTitle, postBody, form) => {
+    try {
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
       await addDoc(addPostRef, {
-        createdAt: serverTimestamp(),
+        userDisplayText: "",
         username: username,
         userId: user.uid,
-        postTitle: postTitle,
-        postContent: postContent,
-        upVotes: 0,
-        downVotes: 0,
-        comments: 0,
+        title: postTitle,
+        body: postBody,
+        numberOfComments: 0,
+        voteStatus: 0,
+        currentUserVoteStatus: {
+          id: "",
+          voteValue: 0,
+        },
+        imageURL: "",
+        postIdx: "",
+        createdAt: serverTimestamp(),
+        editedAt: "",
       });
       form.reset();
       const updatedPosts = await fetchPosts();
@@ -140,7 +166,7 @@ function App() {
       setPosts(getPosts);
     };
     fetchData();
-  }, []);
+  }, [forceRender]);
 
   const registerUser = async (email, password) => {
     // console.log(email, password);
@@ -151,7 +177,9 @@ function App() {
         password
       );
       const user = userCredential.user;
-      await setDoc(doc(db, "users", user.uid), { username });
+      await setDoc(doc(db, "users", user.uid), {
+        username,
+      });
       closeModal();
       return user;
     } catch (error) {
@@ -217,34 +245,40 @@ function App() {
       value={{
         posts,
         logInModal,
+        email,
+        password,
+        user,
+        signUpMod,
+        logInMod,
+        userCredMod,
+        username,
+        error,
+        title,
+        body,
+        deletePostMod,
+        forceRender,
         setLogInModal,
         closeModal,
         handlePostCreation,
         handlePostDeletion,
-        email,
-        password,
-        user,
         signOutUser,
         signInUser,
         registerUser,
-        signUpMod,
-        logInMod,
-        userCredMod,
         showModal,
         setEmail,
         setPassword,
-        username,
         setUsername,
         setError,
-        error,
+        setTitle,
+        setBody,
+        setForceRender,
       }}
     >
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          {/* <Route path="/posts-page" element={<PostsPage />} /> */}
           <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/post/:postId" element={<DisplayDetailedPost />} />
+          <Route path="/post/:pageId" element={<DisplayDetailedPost />} />
         </Routes>
       </BrowserRouter>
     </DataContext.Provider>

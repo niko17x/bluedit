@@ -8,9 +8,14 @@
 
 :root {
   --link-color: rgb(37, 153, 255);
-  --main-color: rgb(51, 111, 221);
-  --main-text-color: rgb(170, 177, 184);
-  --secondary-text-color: rgb(119, 124, 129);
+  --main-theme-color: rgb(51, 111, 221);
+  --lightgray-text-color: rgb(170, 177, 184);
+  --darkgray-text-color: rgb(119, 124, 129);
+  --blackish-text-color: #1a1a1b;
+  --lightgray-background-color: #d9dcde;
+  --mediumlight-background-color: #343536;
+  --medium-background-color: #1a1a1b;
+  --dark-background-color: #030303;
 }
 
 body {
@@ -29,7 +34,6 @@ textarea {
   border: none;
   text-decoration: none;
   cursor: pointer;
-
   outline: none;
   background: none;
   box-shadow: none;
@@ -399,7 +403,7 @@ button:not(:disabled):active {
   color: white;
   border-radius: 50px;
   border: 1px solid transparent;
-  background-color: var(--main-color);
+  background-color: var(--main-theme-color);
 }
 
 /* SIDEBARACTIONS.JSX */
@@ -540,21 +544,23 @@ button:not(:disabled):active {
 
 .up_vote,
 .down_vote {
-  /* color: white; */
   border: none;
   background-color: transparent;
 }
 
 .vote_buttons {
   display: grid;
-  align-items: center;
   font-size: 19px;
   font-weight: 700;
   gap: 0.5rem;
+  justify-items: center;
+  max-height: 10px;
 }
 
 .vote_buttons button {
   color: white;
+  display: grid;
+  padding: 0;
 }
 
 .post--container .main {
@@ -570,9 +576,9 @@ button:not(:disabled):active {
   color: lightgray;
 }
 
-/* POSTSPAGE.JSX */
+/* DISPLAYDETAILEDPOST.JSX */
 
-.posts_page--container {
+.display_detailed_post--container {
   width: 60vw;
   gap: 1.5rem;
   display: grid;
@@ -586,65 +592,56 @@ button:not(:disabled):active {
   transform: translate(-50%, -10%);
   display: grid;
   grid-template-columns: min-content 1fr;
-  color: var(--main-text-color);
+  color: var(--lightgray-text-color);
 }
 
-.posts_page--container .user_id {
+.display_detailed_post--container .user_id {
   font-size: 18px;
-  color: var(--secondary-text-color);
+  color: var(--darkgray-text-color);
 }
 
-.posts_page--container .post_title {
+.display_detailed_post--container .user_votes {
+  display: grid;
+  justify-items: center;
+  align-items: flex-start;
+  max-height: 12vh;
+}
+
+.display_detailed_post--container .post_title {
   font-size: 35px;
   font-weight: 600;
 }
 
-.posts_page--container .body {
+.display_detailed_post--container .body {
   display: grid;
   gap: 1rem;
 }
 
-.posts_page--container .user_comments,
-.posts_page--container .share_content {
-  gap: 0.5rem;
+.display_detailed_post--container .user_comments,
+.display_detailed_post--container .share_content,
+.display_detailed_post--container .delete_post {
   display: grid;
   white-space: nowrap;
-  place-content: center;
-  grid-template-columns: 1fr 1fr 1fr;
   background-color: transparent;
-  border-radius: none;
+  grid-template-columns: repeat(3, 1fr);
 }
 
-.posts_page--container .user_votes {
-  gap: 0.5rem;
-  display: grid;
-  place-items: center;
-  grid-template-rows: repeat(3, min-content);
+.display_detailed_post--container button {
+  border: none;
+  font-size: 1rem;
+  background-color: transparent;
+  color: var(--darkgray-text-color);
 }
 
-.posts_page--container .user_votes button {
-  color: var(--secondary-text-color);
-}
-
-.posts_page--container .engagement_panel {
+.engagement_panel {
   gap: 2rem;
   display: grid;
   grid-template-columns: repeat(3, min-content);
 }
 
-.engagement_panel > div {
-  border: 1px solid transparent;
-  border-radius: 50px;
-  padding: 0.3rem 0.8rem;
-  gap: 0.4rem;
-  font-weight: 600;
-  background-color: #33464c;
-}
-
-.engagement_panel :nth-child(2),
-.engagement_panel :nth-child(3) {
+.engagement_panel div {
+  padding: 0.3rem 0.3rem;
   display: grid;
-  grid-template-columns: repeat(2, min-content);
 }
 
 /* DIVIDER.JSX */
@@ -829,7 +826,6 @@ button:not(:disabled):active {
   border-radius: 5px;
   border: 1px solid gray;
   resize: none;
-  white-space: nowrap;
 }
 
 .create_post--container textarea {
@@ -857,4 +853,83 @@ button:not(:disabled):active {
 .create_post--container .button_group :first-child {
   background-color: #1a1a1b;
   border: 1px solid gray;
+}
+
+/* DELETEPOSTMODAL.JSX */
+
+.delete_post_modal {
+  color: var(--lightgray-text-color);
+  z-index: 9999;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(25px);
+  transform: translate(-50%, -50%);
+  background-color: rgba(40, 40, 40, 0.65);
+  box-shadow:
+    rgba(0, 0, 0, 0.16) 0px 3px 6px,
+    rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.delete_post_modal .close {
+  color: var(--darkgray-text-color);
+  top: 10px;
+  right: 10px;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  background: none;
+  position: absolute;
+}
+
+.delete_post_modal .divider {
+  border-top: 2px solid var(--mediumlight-background-color);
+  /* padding: 1rem 0; */
+}
+
+.delete_post_modal :nth-child(3) {
+  padding: 1rem;
+}
+
+.delete_post_modal .header {
+  font-size: 20px;
+  font-weight: 600;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 1rem;
+}
+
+.delete_post_modal .engagement_buttons {
+  display: grid;
+  grid-template-columns: repeat(2, min-content);
+  gap: 1rem;
+  background-color: var(--mediumlight-background-color);
+  border: 1px solid transparent;
+  border-radius: 0 0 5px 5px;
+  padding: 1rem;
+  min-width: 35vw;
+  justify-content: flex-end;
+}
+
+.delete_post_modal .engagement_buttons button {
+  border: 2px solid var(--darkgray-text-color);
+  color: var(--lightgray-text-color);
+  background-color: transparent;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 0.5rem;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.delete_post_modal .engagement_buttons button:nth-child(2) {
+  background-color: var(--lightgray-background-color);
+  color: var(--blackish-text-color);
+  border: transparent;
 }
