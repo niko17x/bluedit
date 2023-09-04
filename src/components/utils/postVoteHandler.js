@@ -12,11 +12,11 @@ const postVoteHandler = async (post, vote) => {
     }
 
     // Create a document reference with a custom ID (post.id)
-    const customDocRef = doc(db, `users/${userUid}/postVotes/${post.id}`);
+    const customDocRef = doc(db, `users/${userUid}/postVotes/${post}`);
 
     // Set the data for the custom document ID
     await setDoc(customDocRef, {
-      postId: post.id,
+      postId: post,
       voteValue: vote,
     });
 

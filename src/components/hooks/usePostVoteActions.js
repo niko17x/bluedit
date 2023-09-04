@@ -31,27 +31,22 @@ const usePostVoteActions = () => {
     const postVotesRef = collection(db, `users/${loggedUserId}/postVotes`);
     const querySnapshot = await getDocs(postVotesRef);
     querySnapshot.forEach((doc) => {
-      doc.id === post.id ? (voteExists = doc.data()) : null;
+      doc.id === post ? (voteExists = doc.data()) : null;
     });
 
-    const userPostIdRef = doc(
-      db,
-      "users",
-      `${loggedUserId}/postVotes`,
-      post.id
-    );
-    const voteStatusRef = doc(db, "posts", `${post.id}`);
+    const userPostIdRef = doc(db, "users", `${loggedUserId}/postVotes`, post);
+    const voteStatusRef = doc(db, "posts", `${post}`);
+    const targetName = e.target.name;
 
     if (!voteExists) {
       postVoteHandler(post, vote);
       await updateVoteStatus(voteStatusRef, vote);
     } else {
       const userVoteValueData = (await getDoc(userPostIdRef)).data().voteValue;
+
       if (userVoteValueData === null) {
         return;
       }
-
-      const targetName = e.target.name;
 
       if (userVoteValueData === 1) {
         if (targetName === "up_vote") {
@@ -71,7 +66,6 @@ const usePostVoteActions = () => {
         }
       }
     }
-
     setForceRender((prev) => prev + 1);
   };
 

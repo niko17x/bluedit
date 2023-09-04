@@ -6,15 +6,7 @@ import usePostVoteActions from "./hooks/usePostVoteActions";
 
 export const AllPosts = () => {
   const { posts } = useContext(DataContext);
-  // const [localVoteStatus, setLocalVoteStatus] = useState(null); // !
   const postVoteActions = usePostVoteActions(); // As per rules, declaring custom react hook at top level.
-
-  // !
-  // useEffect(() => {
-  //   if (localVoteStatus !== null) {
-  //     console.log(localVoteStatus);
-  //   }
-  // }, [localVoteStatus]);
 
   return (
     <>
@@ -26,10 +18,8 @@ export const AllPosts = () => {
                 className="up_vote"
                 name="up_vote"
                 type="button"
-                // onClick={(e) => postVoteActions(post, 1, e)}
                 onClick={async (e) => {
-                  await postVoteActions(post, 1, e);
-                  // setLocalVoteStatus(post.voteStatus + 1);
+                  await postVoteActions(post.id, 1, e);
                 }}
               >
                 ⬆
@@ -42,8 +32,7 @@ export const AllPosts = () => {
                 name="down_vote"
                 type="button"
                 onClick={async (e) => {
-                  await postVoteActions(post, -1, e);
-                  // setLocalVoteStatus(post.voteStatus - 1);
+                  await postVoteActions(post.id, -1, e);
                 }}
               >
                 ⬇

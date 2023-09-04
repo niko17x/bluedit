@@ -3,6 +3,7 @@ import Comments from "../components/Comments";
 import Divider from "../components/Divider";
 import { DataContext } from "../App";
 import { useParams, useNavigate } from "react-router-dom";
+import usePostVoteActions from "../components/hooks/usePostVoteActions";
 
 const DisplayDetailedPost = () => {
   const { posts, user, handlePostDeletion } = useContext(DataContext);
@@ -10,6 +11,7 @@ const DisplayDetailedPost = () => {
   const navigate = useNavigate();
   const getPost = posts ? posts.find((post) => post.id === pageId) : null;
   const authorIsLoggedIn = getPost && user && getPost.userId === user.uid;
+  const postVoteActions = usePostVoteActions(); // React custom hooks placed on top-level.
 
   if (posts === undefined) {
     return <div>Loading...</div>;
@@ -27,11 +29,25 @@ const DisplayDetailedPost = () => {
   return (
     <div className="display_detailed_post--container" key={getPost.id}>
       <div className="user_votes">
-        <button className="up_vote" type="button">
+        <button
+          className="up_vote"
+          name="up_vote"
+          type="button"
+          onClick={async (e) => {
+            postVoteActions(pageId, 1, e);
+          }}
+        >
           ⬆
         </button>
         <div className="vote_count">{getPost.voteStatus}</div>
-        <button className="down_vote" type="button">
+        <button
+          className="down_vote"
+          name="down_vote"
+          type="button"
+          onClick={async (e) => {
+            postVoteActions(pageId, -1, e);
+          }}
+        >
           ⬇
         </button>
       </div>

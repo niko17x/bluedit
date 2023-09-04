@@ -36,7 +36,6 @@ function App() {
   const [logInMod, setLogInMod] = useState(false);
   const [signUpMod, setSignUpMod] = useState(false);
   const [userCredMod, setUserCredMod] = useState(false);
-  const [deletePostMod, setDeletePostMod] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -59,7 +58,9 @@ function App() {
             }
             // Set the username here
             else {
-              console.log("No such document!");
+              console.log(
+                "Issue fetching user. Check FB authentication users. Username may have been deleted from database."
+              );
             }
           } catch (error) {
             console.error("Error fetching user document:", error);
@@ -255,7 +256,6 @@ function App() {
         error,
         title,
         body,
-        deletePostMod,
         forceRender,
         setLogInModal,
         closeModal,
