@@ -5,8 +5,16 @@ import { Link } from "react-router-dom";
 import usePostVoteActions from "./hooks/usePostVoteActions";
 
 export const AllPosts = () => {
-  const { posts, votes, setVotes, setPostId } = useContext(DataContext);
+  const { posts } = useContext(DataContext);
+  // const [localVoteStatus, setLocalVoteStatus] = useState(null); // !
   const postVoteActions = usePostVoteActions(); // As per rules, declaring custom react hook at top level.
+
+  // !
+  // useEffect(() => {
+  //   if (localVoteStatus !== null) {
+  //     console.log(localVoteStatus);
+  //   }
+  // }, [localVoteStatus]);
 
   return (
     <>
@@ -18,7 +26,11 @@ export const AllPosts = () => {
                 className="up_vote"
                 name="up_vote"
                 type="button"
-                onClick={() => postVoteActions(post, 1)}
+                // onClick={(e) => postVoteActions(post, 1, e)}
+                onClick={async (e) => {
+                  await postVoteActions(post, 1, e);
+                  // setLocalVoteStatus(post.voteStatus + 1);
+                }}
               >
                 ⬆
               </button>
@@ -29,7 +41,10 @@ export const AllPosts = () => {
                 className="down_vote"
                 name="down_vote"
                 type="button"
-                onClick={(e) => postVoteActions(post, -1)}
+                onClick={async (e) => {
+                  await postVoteActions(post, -1, e);
+                  // setLocalVoteStatus(post.voteStatus - 1);
+                }}
               >
                 ⬇
               </button>

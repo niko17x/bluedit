@@ -1,61 +1,83 @@
 import { getAuth } from "firebase/auth";
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
   increment,
   updateDoc,
-  writeBatch,
 } from "firebase/firestore";
+import { useContext } from "react";
 import { db } from "../../lib/firebase";
 import postVoteHandler from "../utils/postVoteHandler";
-import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../../App";
 
 const usePostVoteActions = () => {
-  const { setForceRender, setPosts } = useContext(DataContext);
+  const { setForceRender } = useContext(DataContext);
 
-  const postVoteActions = async (post, vote) => {
-    const batch = writeBatch(db);
-    const authenticate = getAuth();
-    const loggedUserId = authenticate.currentUser?.uid;
-    const postIdRef = doc(db, "users", `${loggedUserId}/postVotes`, post.id);
+  const updateVoteStatus = async (ref, value) => {
+    await updateDoc(ref, { voteStatus: increment(value) });
+  };
+  const updateVoteValue = async (ref, value) => {
+    await updateDoc(ref, { voteValue: increment(value) });
+  };
+
+  const postVoteActions = async (post, vote, e) => {
+    const auth = getAuth();
+    const loggedUserId = auth.currentUser?.uid;
+
     let voteExists = null;
-
-    // get postVotes data:
-    const postVotesRef = collection(
-      doc(db, "users", `${loggedUserId}`),
-      "postVotes"
-    );
+    const postVotesRef = collection(db, `users/${loggedUserId}/postVotes`);
     const querySnapshot = await getDocs(postVotesRef);
     querySnapshot.forEach((doc) => {
-      if (doc.id === post?.id) {
-        voteExists = doc.data();
-      }
+      doc.id === post.id ? (voteExists = doc.data()) : null;
     });
 
-    const newVote = {
-      postId: post.id,
-      voteValue: vote,
-    };
-
-    let getVoteStatusData;
+    const userPostIdRef = doc(
+      db,
+      "users",
+      `${loggedUserId}/postVotes`,
+      post.id
+    );
     const voteStatusRef = doc(db, "posts", `${post.id}`);
-    const voteStatusSnapshot = await getDoc(voteStatusRef);
-    getVoteStatusData ? voteStatusSnapshot.data().voteStatus : null;
 
     if (!voteExists) {
-      await postVoteHandler(post, vote);
+      postVoteHandler(post, vote);
+      await updateVoteStatus(voteStatusRef, vote);
     } else {
-      await updateDoc(voteStatusRef, { voteStatus: increment(vote) });
-      await updateDoc(postIdRef, newVote);
+      const userVoteValueData = (await getDoc(userPostIdRef)).data().voteValue;
+      if (userVoteValueData === null) {
+        return;
+      }
+
+      const targetName = e.target.name;
+
+      if (userVoteValueData === 1) {
+        if (targetName === "up_vote") {
+          await deleteDoc(userPostIdRef);
+          await updateVoteStatus(voteStatusRef, -1);
+        } else if (targetName === "down_vote") {
+          await updateVoteStatus(voteStatusRef, -2);
+          await updateVoteValue(userPostIdRef, -2);
+        }
+      } else if (userVoteValueData === -1) {
+        if (targetName === "up_vote") {
+          await updateVoteStatus(voteStatusRef, 2);
+          await updateVoteValue(userPostIdRef, 2);
+        } else if (targetName === "down_vote") {
+          await deleteDoc(userPostIdRef);
+          await updateVoteStatus(voteStatusRef, 1);
+        }
+      }
     }
-    setForceRender((prev) => prev + vote);
+
+    setForceRender((prev) => prev + 1);
   };
+
   return postVoteActions;
 };
 
 export default usePostVoteActions;
-// batch.set(postIdRef, newVote);
-// await batch.commit();
+
+// TODO: Using cloud functions, can you store all the user voteValue to a resusable variable to simplify code further? // simplify the functions - make it more "pure" // Are there ways to move some functions to the "utils" folder?

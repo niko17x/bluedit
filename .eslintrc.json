@@ -55,7 +55,6 @@
         "allowArrayEnd": false
       }
     ],
-    "no-confusing-arrow": ["error", { "allowParens": false }],
     // Auto determines if parenthesis are required or not for multi operators:
     "no-mixed-operators": "error",
     // Allows tabs for spacing:
