@@ -23,6 +23,7 @@ import {
   getDoc,
   deleteDoc,
 } from "firebase/firestore";
+import { fetchComments } from "./components/utils/fetchComments";
 
 export const DataContext = createContext(); // Out of component to prevent re-renders.
 
@@ -31,6 +32,7 @@ const addPostRef = collection(db, "posts");
 
 function App() {
   const [posts, setPosts] = useState([]);
+  const [comments, setComments] = useState([]);
   const [logInModal, setLogInModal] = useState(false);
   const [user, setUser] = useState({}); // Firebase store user object.
   const [logInMod, setLogInMod] = useState(false);
@@ -169,6 +171,14 @@ function App() {
     fetchData();
   }, [forceRender]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const getComments = await fetchComments();
+      setComments(getComments);
+    };
+    fetchData();
+  }, [forceRender]);
+
   const registerUser = async (email, password) => {
     // console.log(email, password);
     try {
@@ -257,6 +267,8 @@ function App() {
         title,
         body,
         forceRender,
+        comments,
+        setComments,
         setLogInModal,
         closeModal,
         handlePostCreation,

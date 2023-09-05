@@ -14,7 +14,13 @@
 [*] : After post creation by author, page should be redirected to the "detailed post page".
 [*] : Vote number on Homepage.jsx should show "Vote" if there are not votes as a default value.
 [*] : On AllPosts.jsx component, how can I have the vote section refresh the updated vote count without having to refresh the entire page?
-[ ] : Make votes work on the "DisplayDetailedPost.jsx" component.
+[*] : Make votes work on the "DisplayDetailedPost.jsx" component.
+[*] : Create a comment box in DisplayDetailedPost.jsx directly below the main post.
+[*] : Author of comments can delete the comment or edit the comment. Show deltee option only for author.
+[ ] : Clicking on delete should remove data/comment from fb and useState.
+[*] : Once user has typed in the comment box, comment submission button should be highlighted.
+[*] : Create function for comment submission.
+[*] : Submitting the comment should show below the comment box.
 
 ### Todo (after 90% completion):
 
@@ -24,6 +30,8 @@
 [] : Move the modal functions to its own separate file from the App.jsx file.
 [] : React router dom "useNavigate" is being used in multiple components. Can the DRY principle be applied here?
 [] : Instead of "Delete Post" during Post Creation, give the option to "Save Draft" instead.
+[] : Using Firebase cloud actions to store all the user votes in posts/comments to a state variable for reuse.
+[] : Create separate util functions that simply deal with get/add FB docs.
 
 ### What I've Learned:
 

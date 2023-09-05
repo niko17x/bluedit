@@ -4,6 +4,7 @@ import Divider from "../components/Divider";
 import { DataContext } from "../App";
 import { useParams, useNavigate } from "react-router-dom";
 import usePostVoteActions from "../components/hooks/usePostVoteActions";
+import CommentEditor from "../components/CommentEditor";
 
 const DisplayDetailedPost = () => {
   const { posts, user, handlePostDeletion } = useContext(DataContext);
@@ -79,6 +80,8 @@ const DisplayDetailedPost = () => {
             ) : null}
           </div>
         </div>
+        <div className="border"></div>
+        <CommentEditor />
         <Divider />
         <Comments />
       </div>

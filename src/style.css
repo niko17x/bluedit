@@ -933,3 +933,44 @@ button:not(:disabled):active {
   color: var(--blackish-text-color);
   border: transparent;
 }
+
+/* COMMENTEDITOR.JSX */
+
+.co-ed p {
+  margin: 10px 0 10px 0;
+}
+
+.co-ed .textarea-form {
+  border: 1px solid var(--mediumlight-background-color);
+  border-radius: 5px;
+  display: grid;
+  grid-template-rows: 1fr min-content;
+}
+
+.co-ed textarea {
+  height: 200px;
+  resize: vertical;
+  color: var(--lightgray-background-color);
+  padding: 1rem;
+}
+
+.textarea-footer-bg {
+  background-color: var(--mediumlight-background-color);
+  height: 30px;
+  display: grid;
+  align-content: center;
+  border-radius: 0 0 5px 5px;
+}
+
+.textarea-form button {
+  width: min-content;
+  height: min-content;
+  border: 1px solid transparent;
+  background-color: var(--lightgray-background-color);
+  justify-self: flex-end;
+  border-radius: 50px;
+}
+
+.textarea-form .highlight {
+  background-color: cornflowerblue;
+}
