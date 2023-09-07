@@ -45,6 +45,7 @@ function App() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [forceRender, setForceRender] = useState(0);
+  const [commentId, setCommentId] = useState("");
 
   // Retrieve the current user id from fb auth, matches to id in firestore to obtain user username:
   useEffect(() => {
@@ -284,6 +285,8 @@ function App() {
         setTitle,
         setBody,
         setForceRender,
+        commentId,
+        setCommentId,
       }}
     >
       <BrowserRouter>

@@ -54,7 +54,7 @@ const CreatePost = () => {
           onSubmit={(e) => {
             e.preventDefault();
             onCreate(title, body, e.target);
-            console.log("title:", title, "body:", body);
+            // console.log("title:", title, "body:", body);
             resetInputs();
           }}
         >

@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import { DataContext } from "../App";
 import { Link } from "react-router-dom";
-// import foo from "./hooks/usePostVoteActions";
-import usePostVoteActions from "./hooks/usePostVoteActions";
+import useVoteActions from "./hooks/useVoteActions";
 
 export const AllPosts = () => {
   const { posts } = useContext(DataContext);
-  const postVoteActions = usePostVoteActions(); // As per rules, declaring custom react hook at top level.
+  const voteActions = useVoteActions(); // As per rules, declaring custom react hook at top level.
+
+  const handleVote = async (post, vote, e) => {
+    voteActions(post, vote, e, "postVotes");
+  };
 
   return (
     <>
@@ -18,9 +21,7 @@ export const AllPosts = () => {
                 className="up_vote"
                 name="up_vote"
                 type="button"
-                onClick={async (e) => {
-                  await postVoteActions(post.id, 1, e);
-                }}
+                onClick={(e) => handleVote(post.id, 1, e)}
               >
                 ⬆
               </button>
@@ -31,9 +32,7 @@ export const AllPosts = () => {
                 className="down_vote"
                 name="down_vote"
                 type="button"
-                onClick={async (e) => {
-                  await postVoteActions(post.id, -1, e);
-                }}
+                onClick={(e) => handleVote(post.id, -1, e)}
               >
                 ⬇
               </button>

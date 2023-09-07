@@ -3,29 +3,25 @@ import { setDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { getAuth } from "firebase/auth";
 
-const postVoteHandler = async (post, vote) => {
+const voteHandler = async (post, vote, voteCategory) => {
   const authenticate = getAuth();
+
   try {
     const userUid = authenticate.currentUser?.uid;
     if (!userUid) {
       throw new Error("User is not authenticated");
     }
 
-    // Create a document reference with a custom ID (post.id)
-    const customDocRef = doc(db, `users/${userUid}/postVotes/${post}`);
+    // voteCategory is a param that is either postVotes or commentVotes.
+    const customDocRef = doc(db, `users/${userUid}/${voteCategory}/${post}`);
 
-    // Set the data for the custom document ID
     await setDoc(customDocRef, {
       postId: post,
       voteValue: vote,
     });
-
-    // const updatedVotes = await fetchVotes();
-    // setVotes(updatedVotes);
-    console.log("Vote rendered.");
   } catch (error) {
     console.log("Error: ", error);
   }
 };
 
-export default postVoteHandler;
+export default voteHandler;

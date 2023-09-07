@@ -3,8 +3,8 @@ import Comments from "../components/Comments";
 import Divider from "../components/Divider";
 import { DataContext } from "../App";
 import { useParams, useNavigate } from "react-router-dom";
-import usePostVoteActions from "../components/hooks/usePostVoteActions";
 import CommentEditor from "../components/CommentEditor";
+import useVoteActions from "../components/hooks/useVoteActions";
 
 const DisplayDetailedPost = () => {
   const { posts, user, handlePostDeletion } = useContext(DataContext);
@@ -12,7 +12,7 @@ const DisplayDetailedPost = () => {
   const navigate = useNavigate();
   const getPost = posts ? posts.find((post) => post.id === pageId) : null;
   const authorIsLoggedIn = getPost && user && getPost.userId === user.uid;
-  const postVoteActions = usePostVoteActions(); // React custom hooks placed on top-level.
+  const voteActions = useVoteActions(); // React custom hooks placed on top-level.
 
   if (posts === undefined) {
     return <div>Loading...</div>;
@@ -27,27 +27,27 @@ const DisplayDetailedPost = () => {
     navigate("/");
   };
 
+  const handleVote = async (e, vote) => {
+    voteActions(pageId, vote, e, "postVotes");
+  };
+
   return (
     <div className="display_detailed_post--container" key={getPost.id}>
       <div className="user_votes">
         <button
           className="up_vote"
-          name="up_vote"
+          name="up_vote post"
           type="button"
-          onClick={async (e) => {
-            postVoteActions(pageId, 1, e);
-          }}
+          onClick={(e) => handleVote(e, 1)}
         >
           ⬆
         </button>
         <div className="vote_count">{getPost.voteStatus}</div>
         <button
           className="down_vote"
-          name="down_vote"
+          name="down_vote post"
           type="button"
-          onClick={async (e) => {
-            postVoteActions(pageId, -1, e);
-          }}
+          onClick={(e) => handleVote(e, -1)}
         >
           ⬇
         </button>

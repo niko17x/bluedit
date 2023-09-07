@@ -17,10 +17,12 @@
 [*] : Make votes work on the "DisplayDetailedPost.jsx" component.
 [*] : Create a comment box in DisplayDetailedPost.jsx directly below the main post.
 [*] : Author of comments can delete the comment or edit the comment. Show deltee option only for author.
-[ ] : Clicking on delete should remove data/comment from fb and useState.
+[*] : Clicking on delete should remove data/comment from fb and useState.
 [*] : Once user has typed in the comment box, comment submission button should be highlighted.
 [*] : Create function for comment submission.
 [*] : Submitting the comment should show below the comment box.
+[ ] : Work on voting for individual comments.
+[ ] : Delete comment when post gets deleted.
 
 ### Todo (after 90% completion):
 
@@ -32,6 +34,7 @@
 [] : Instead of "Delete Post" during Post Creation, give the option to "Save Draft" instead.
 [] : Using Firebase cloud actions to store all the user votes in posts/comments to a state variable for reuse.
 [] : Create separate util functions that simply deal with get/add FB docs.
+[] : Update error handling for all components/utils for enhanced user experience.
 
 ### What I've Learned:
 
@@ -39,3 +42,5 @@
 • "try...catch" blocks aren't always necessary but does allow you to keep code more organized and better error handling. Controlling the flow of the code is also improved. If an error is the result, then you can handle that part of the code.
 • "?" is the optional chaining operator in JS. When you place it before a property or method, it will only attempt to access that property or method if the object before the "?" is not 'null' or 'undefined', it will short-circuit the expression and return 'undefined'. ie: console.log(user?.address?.street) => if 'user' and 'address' is not null/undefined, the output will be valid.
 • In Firebase, you can use "batch" to make bulk changes to the database instead of changing one thing at a time. This allows data read/write to be more efficient and safe. Safe b/c batch will not write data if something fails ensuring either all the changes are made together or none until resolved.
+• Components and functions are much more manageable and easier to debug when they are purposed for one thing only.
+• When dealing with multiple related functions (ie: voteActionsUtil.js), the benefits of keeping them together include: cohesion, ease of import, easier to maintain, function relations are easier to read, code reusability

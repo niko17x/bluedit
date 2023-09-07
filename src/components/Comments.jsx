@@ -4,10 +4,15 @@ import firestoreTimestampConvert from "./utils/firestoreTimestampConvert";
 import { deleteDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { doc } from "firebase/firestore";
+import useVoteActions from "./hooks/useVoteActions";
+import { useParams } from "react-router-dom";
 
 const Comments = () => {
-  const { comments, setComments, user } = useContext(DataContext);
+  const { comments, setComments, user, setCommentId, commentId } =
+    useContext(DataContext);
+  const { pageId } = useParams();
   const loggedUserId = user.uid;
+  const voteActions = useVoteActions();
 
   const deleteComments = async (docId) => {
     const commentsRef = doc(db, "comments", docId);
@@ -27,6 +32,10 @@ const Comments = () => {
     return firestoreTimestampConvert(comment);
   };
 
+  const handleVote = async (e, vote, post) => {
+    voteActions(pageId, vote, e, "commentVotes", post);
+  };
+
   // data below mapped to "comments" collection in Firestore:
   return (
     <>
@@ -44,9 +53,26 @@ const Comments = () => {
               <div className="user_post">{comment.textarea}</div>
               <div className="user_engagement">
                 <div className="vote_count">
-                  <button className="up_vote">⬆</button>
+                  <button
+                    className="up_vote"
+                    name="up_vote comment"
+                    onClick={(e) => {
+                      setCommentId(comment.id);
+                      handleVote(e, 1, comment.id);
+                    }}
+                  >
+                    ⬆
+                  </button>
                   <div className="number_of_votes">{comment.voteStatus}</div>
-                  <button className="down_vote">⬇</button>
+                  <button
+                    className="down_vote"
+                    name="down_vote comment"
+                    onClick={(e) => {
+                      handleVote(e, -1, comment.id);
+                    }}
+                  >
+                    ⬇
+                  </button>
                 </div>
                 <div className="replies">
                   <button type="button">
