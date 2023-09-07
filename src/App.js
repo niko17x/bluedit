@@ -24,6 +24,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { fetchComments } from "./components/utils/fetchComments";
+import deleteCommentsOnPost from "./components/utils/deleteCommentsOnPost";
 
 export const DataContext = createContext(); // Out of component to prevent re-renders.
 
@@ -82,9 +83,10 @@ function App() {
     };
   }, [authenticate]);
 
-  const deletePost = async (id, pageId) => {
+  const deletePost = async (id) => {
     try {
       const postRef = doc(db, "posts", id);
+      await deleteCommentsOnPost(id);
       await deleteDoc(postRef);
       const updatedPosts = await fetchPosts();
       setPosts(updatedPosts);

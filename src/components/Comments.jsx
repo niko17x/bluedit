@@ -40,67 +40,72 @@ const Comments = () => {
   return (
     <>
       {comments.map((comment) => {
-        return (
-          <div className="comments--container" key={comment.id}>
-            <div className="profile_image">
-              <img src="" />
-            </div>
-            <div className="body">
-              <div className="profile_id">
-                {comment.username}
-                <span> • {convertedTimeStamp(comment.createdAt)} hr. ago</span>
+        if (comment.postId === pageId) {
+          return (
+            <div className="comments--container" key={comment.id}>
+              <div className="profile_image">
+                <img src="" />
               </div>
-              <div className="user_post">{comment.textarea}</div>
-              <div className="user_engagement">
-                <div className="vote_count">
-                  <button
-                    className="up_vote"
-                    name="up_vote comment"
-                    onClick={(e) => {
-                      setCommentId(comment.id);
-                      handleVote(e, 1, comment.id);
-                    }}
-                  >
-                    ⬆
-                  </button>
-                  <div className="number_of_votes">{comment.voteStatus}</div>
-                  <button
-                    className="down_vote"
-                    name="down_vote comment"
-                    onClick={(e) => {
-                      handleVote(e, -1, comment.id);
-                    }}
-                  >
-                    ⬇
-                  </button>
+              <div className="body">
+                <div className="profile_id">
+                  {comment.username}
+                  <span>
+                    {" "}
+                    • {convertedTimeStamp(comment.createdAt)} hr. ago
+                  </span>
                 </div>
-                <div className="replies">
-                  <button type="button">
-                    💬 <span>Reply</span>
-                  </button>
-                </div>
-                <div className="share_post">
-                  <button type="button">
-                    ⌲ <span>Share</span>
-                  </button>
-                </div>
-                {comment.userId === loggedUserId ? (
-                  <div className="delete-comment">
+                <div className="user_post">{comment.textarea}</div>
+                <div className="user_engagement">
+                  <div className="vote_count">
                     <button
-                      type="button"
-                      name="delete-comment"
-                      onClick={async (e) => {
-                        await deleteComments(comment.id);
+                      className="up_vote"
+                      name="up_vote comment"
+                      onClick={(e) => {
+                        setCommentId(comment.id);
+                        handleVote(e, 1, comment.id);
                       }}
                     >
-                      🗑️ <span>Delete</span>
+                      ⬆
+                    </button>
+                    <div className="number_of_votes">{comment.voteStatus}</div>
+                    <button
+                      className="down_vote"
+                      name="down_vote comment"
+                      onClick={(e) => {
+                        handleVote(e, -1, comment.id);
+                      }}
+                    >
+                      ⬇
                     </button>
                   </div>
-                ) : null}
+                  <div className="replies">
+                    <button type="button">
+                      💬 <span>Reply</span>
+                    </button>
+                  </div>
+                  <div className="share_post">
+                    <button type="button">
+                      ⌲ <span>Share</span>
+                    </button>
+                  </div>
+                  {comment.userId === loggedUserId ? (
+                    <div className="delete-comment">
+                      <button
+                        type="button"
+                        name="delete-comment"
+                        onClick={async (e) => {
+                          await deleteComments(comment.id);
+                        }}
+                      >
+                        🗑️ <span>Delete</span>
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
-          </div>
-        );
+          );
+        }
       })}
     </>
   );

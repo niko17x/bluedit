@@ -21,8 +21,8 @@
 [*] : Once user has typed in the comment box, comment submission button should be highlighted.
 [*] : Create function for comment submission.
 [*] : Submitting the comment should show below the comment box.
-[ ] : Work on voting for individual comments.
 [ ] : Delete comment when post gets deleted.
+[ ] : Work on voting for individual comments.
 
 ### Todo (after 90% completion):
 
