@@ -83,6 +83,7 @@ const DisplayDetailedPost = () => {
         <div className="border"></div>
         <CommentEditor />
         <Divider />
+        {/* go through comment and find where postId === pageId: */}
         <Comments />
       </div>
     </div>

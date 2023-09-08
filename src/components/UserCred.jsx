@@ -4,8 +4,8 @@ import useResetErrorTimeout from "./hooks/useResetErrorTimeout";
 
 const UserCred = () => {
   const {
-    registerUser,
-    closeModal,
+    handleRegisterUser,
+    handleCloseModal,
     setPassword,
     setUsername,
     email,
@@ -17,7 +17,11 @@ const UserCred = () => {
   return (
     <div className="log_in_modal--container">
       <div className="modal show">
-        <button className="modal-close" type="button" onClick={closeModal}>
+        <button
+          className="modal-close"
+          type="button"
+          onClick={handleCloseModal}
+        >
           X
         </button>
         <form
@@ -25,7 +29,9 @@ const UserCred = () => {
           id="sign_in--form"
           onSubmit={(e) => {
             e.preventDefault();
-            registerUser(email, password).catch(() => resetErrorTimeout());
+            handleRegisterUser(email, password).catch(() =>
+              resetErrorTimeout()
+            );
           }}
         >
           <div className="terms">

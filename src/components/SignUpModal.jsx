@@ -3,7 +3,7 @@ import { DataContext } from "../App";
 import useResetErrorTimeout from "./hooks/useResetErrorTimeout";
 
 const SignUpModal = () => {
-  const { closeModal, showModal, error, setError, setEmail } =
+  const { handleCloseModal, handleShowModal, error, setError, setEmail } =
     useContext(DataContext);
 
   const resetErrorTimeout = useResetErrorTimeout();
@@ -11,7 +11,11 @@ const SignUpModal = () => {
   return (
     <div className="log_in_modal--container">
       <div className="modal show">
-        <button className="modal-close" type="button" onClick={closeModal}>
+        <button
+          className="modal-close"
+          type="button"
+          onClick={handleCloseModal}
+        >
           X
         </button>
         <form
@@ -21,7 +25,7 @@ const SignUpModal = () => {
             e.preventDefault();
             const email = e.target.elements.email.value;
             if (email !== "") {
-              showModal("usercred");
+              handleShowModal("usercred");
             } else {
               setError("Please enter an email.");
               resetErrorTimeout();
@@ -61,7 +65,7 @@ const SignUpModal = () => {
             Already a redditor?
             <a
               onClick={(e) => {
-                showModal("login");
+                handleShowModal("login");
               }}
             >
               {" "}

@@ -44,3 +44,4 @@
 • In Firebase, you can use "batch" to make bulk changes to the database instead of changing one thing at a time. This allows data read/write to be more efficient and safe. Safe b/c batch will not write data if something fails ensuring either all the changes are made together or none until resolved.
 • Components and functions are much more manageable and easier to debug when they are purposed for one thing only.
 • When dealing with multiple related functions (ie: voteActionsUtil.js), the benefits of keeping them together include: cohesion, ease of import, easier to maintain, function relations are easier to read, code reusability
+• React `useEffect` can not be invoked within an async function.

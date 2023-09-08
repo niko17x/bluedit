@@ -4,14 +4,24 @@ import { DataContext } from "../App";
 import useResetErrorTimeout from "./hooks/useResetErrorTimeout";
 
 const LogInModal = () => {
-  const { closeModal, showModal, setEmail, setPassword, signInUser, error } =
-    useContext(DataContext);
+  const {
+    handleCloseModal,
+    handleShowModal,
+    setEmail,
+    setPassword,
+    handleSignInUser,
+    error,
+  } = useContext(DataContext);
   const resetErrorTimeout = useResetErrorTimeout();
 
   return (
     <div className="log_in_modal--container">
       <div className="modal show">
-        <button className="modal-close" type="button" onClick={closeModal}>
+        <button
+          className="modal-close"
+          type="button"
+          onClick={handleCloseModal}
+        >
           X
         </button>
         <form
@@ -21,7 +31,7 @@ const LogInModal = () => {
             e.preventDefault();
             const email = e.target.elements.email.value;
             const password = e.target.elements.password.value;
-            signInUser(email, password).catch(() => resetErrorTimeout());
+            handleSignInUser(email, password).catch(() => resetErrorTimeout());
           }}
         >
           <div className="terms">
@@ -67,7 +77,7 @@ const LogInModal = () => {
           <button type="submit">Log In</button>
           <div>
             New to Bluedit?
-            <a onClick={() => showModal("signup")}> Sign Up</a>
+            <a onClick={() => handleShowModal("signup")}> Sign Up</a>
           </div>
         </form>
       </div>

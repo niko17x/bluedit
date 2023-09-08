@@ -1,7 +1,7 @@
 import { db } from "../../lib/firebase";
 import { addDoc, serverTimestamp } from "firebase/firestore";
 import { collection } from "firebase/firestore";
-import { fetchComments } from "./fetchComments";
+import { fetchCommentsOrPosts } from "./fetchDataUtils";
 
 const handleCommentCreation = async (
   postId,
@@ -19,9 +19,10 @@ const handleCommentCreation = async (
       username: username,
       createdAt: serverTimestamp(),
       voteStatus: 0,
+      numberOfVotes: 0,
       textarea: textarea,
     });
-    const updatedComments = await fetchComments();
+    const updatedComments = await fetchCommentsOrPosts("comments");
     setComments(updatedComments);
     form.reset();
   } catch (error) {

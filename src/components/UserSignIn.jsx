@@ -4,7 +4,7 @@ import React, { useContext } from "react";
 import { DataContext } from "../App";
 
 const UserSignIn = () => {
-  const { registerUser, signInUser, signOutUser, user } =
+  const { handleRegisterUser, handleSignInUser, handleSignOutUser, user } =
     useContext(DataContext);
 
   const handleAuth = (e, isSignIn = false) => {
@@ -23,12 +23,12 @@ const UserSignIn = () => {
 
     if (user && isSignIn) {
       // if user is signed in and isSignIn is true
-      signOutUser(); // sign out the user
+      handleSignOutUser(); // sign out the user
     } else if (isSignIn && email) {
       console.log("logged");
-      signInUser(email, password);
+      handleSignInUser(email, password);
     } else {
-      registerUser(email, password);
+      handleRegisterUser(email, password);
     }
 
     // Reset email and password values:
