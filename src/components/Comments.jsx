@@ -32,8 +32,8 @@ const Comments = () => {
     return firestoreTimestampConvert(comment);
   };
 
-  const handleVote = async (e, vote, post) => {
-    voteActions(pageId, vote, e, "commentVotes", post);
+  const handleVote = async (voteCollectionId, vote, e, voteCategory) => {
+    voteActions(voteCollectionId, vote, e, voteCategory, pageId);
   };
 
   // data below mapped to "comments" collection in Firestore:
@@ -61,8 +61,7 @@ const Comments = () => {
                       className="up_vote"
                       name="up_vote comment"
                       onClick={(e) => {
-                        setCommentId(comment.id);
-                        handleVote(e, 1, comment.id);
+                        handleVote(comment.id, 1, e, "commentVotes");
                       }}
                     >
                       ⬆
@@ -72,7 +71,7 @@ const Comments = () => {
                       className="down_vote"
                       name="down_vote comment"
                       onClick={(e) => {
-                        handleVote(e, -1, comment.id);
+                        handleVote(comment.id, -1, e, "commentVotes");
                       }}
                     >
                       ⬇

@@ -16,23 +16,43 @@ const COMMENT_VOTES = "commentVotes";
 const useVoteActions = () => {
   const { setForceRender } = useContext(DataContext);
 
-  const postVoteActions = async (post, vote, e, voteCategory, comment) => {
+  const postVoteActions = async (
+    voteCollectionId,
+    vote,
+    e,
+    voteCategory,
+    postId
+  ) => {
     const isCommentVote = e.target.name.includes("comment");
 
     const auth = getAuth();
     const loggedUserId = auth.currentUser?.uid;
     const voteCat = isCommentVote ? COMMENT_VOTES : POST_VOTES;
 
-    const docPath = isCommentVote ? `comments/${comment}` : `posts/${post}`;
+    const docPath = isCommentVote
+      ? `comments/${voteCollectionId}`
+      : `posts/${voteCollectionId}`;
     const voteStatusRef = doc(db, docPath);
 
-    const userPostIdRef = doc(db, "users", `${loggedUserId}/${voteCat}`, post);
+    const userPostIdRef = doc(
+      db,
+      "users",
+      `${loggedUserId}/${voteCat}`,
+      voteCollectionId
+    );
     const targetClassName = e.target.className;
 
-    const voteExists = await checkVoteExists(post, loggedUserId, e);
+    const voteExists = await checkVoteExists(voteCollectionId, loggedUserId, e);
 
     if (!voteExists) {
-      await handleNewVote(post, vote, voteStatusRef, voteCategory);
+      // console.log(voteCollectionId, vote, voteStatusRef, voteCategory);
+      await handleNewVote(
+        voteCollectionId,
+        vote,
+        voteStatusRef,
+        voteCategory,
+        postId
+      );
     } else {
       await handleExistingVote(userPostIdRef, voteStatusRef, targetClassName);
     }

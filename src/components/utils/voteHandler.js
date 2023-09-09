@@ -3,7 +3,7 @@ import { setDoc } from "firebase/firestore";
 import { db } from "../../lib/firebase";
 import { getAuth } from "firebase/auth";
 
-const voteHandler = async (post, vote, voteCategory) => {
+const voteHandler = async (voteCollectionId, vote, voteCategory, postId) => {
   const authenticate = getAuth();
 
   try {
@@ -13,10 +13,15 @@ const voteHandler = async (post, vote, voteCategory) => {
     }
 
     // voteCategory is a param that is either postVotes or commentVotes.
-    const customDocRef = doc(db, `users/${userUid}/${voteCategory}/${post}`);
+    const customDocRef = doc(
+      db,
+      `users/${userUid}/${voteCategory}/${voteCollectionId}`
+    );
+    // console.log("voteCategory: ", voteCategory);
+    // console.log("post:", voteCollectionId);
 
     await setDoc(customDocRef, {
-      postId: post,
+      postId: postId,
       voteValue: vote,
     });
   } catch (error) {
@@ -25,3 +30,5 @@ const voteHandler = async (post, vote, voteCategory) => {
 };
 
 export default voteHandler;
+
+// ! Bug => commentVotes subcollection id must be fixed from containing the current pageId to the unique commentid.

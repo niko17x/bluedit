@@ -44,7 +44,7 @@ function App() {
   const [forceRender, setForceRender] = useState(0);
   const [commentId, setCommentId] = useState("");
 
-  console.log("Log - App.js");
+  // console.log("Log - App.js");
 
   useFetchUserDoc(authenticate, setUser, setUsername);
 

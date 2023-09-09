@@ -1,3 +1,4 @@
+// This component handles the actual collection for "comments". Nothing to do with comment voting logic.
 import { db } from "../../lib/firebase";
 import { addDoc, serverTimestamp } from "firebase/firestore";
 import { collection } from "firebase/firestore";
